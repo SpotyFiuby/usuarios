@@ -1,4 +1,4 @@
-# Taller 2 - Spotyfiuba
+# Usuarios - Spotyfiuba 
 
 # Cómo comenzar:
 
