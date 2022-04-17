@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from app.routers import user_controller
 from starlette.middleware.cors import CORSMiddleware
+
+from app.routers import user_controller
 
 app = FastAPI()
 
@@ -15,6 +16,7 @@ app.add_middleware(
 )
 
 app.include_router(user_controller.router)
+
 
 @app.get("/", tags=["Home"])
 def home():

@@ -1,6 +1,8 @@
-import requests
-from behave import *
+# pylint: skip-file
 import json
+
+import requests
+from behave import given, then, when
 
 empty = b'[]'
 
@@ -19,10 +21,12 @@ def no_users(context):
     global apiUrl
     apiUrl = 'http://127.0.0.1:8000/'
 
+
 @given('que necesito crear users al sistema')
 def create_users(context):
     global completeApi
     completeApi = 'http://127.0.0.1:8000/users/'
+
 
 @given('soy un usuario y quiero visualizar la información de un user')
 def view_information(context):
@@ -39,6 +43,7 @@ def update_information(context):
     bodyJson = json.loads(body4)
     id = requests.post(completeApi, json=bodyJson).content.decode()
 
+
 @given('que quiero tener actualizados los users')
 def update_users(context):
     global id
@@ -50,14 +55,15 @@ def update_users(context):
 @when('consulto los users')
 def get_all_users(context):
     global result
-    completeApi = apiUrl+"users/"
+    completeApi = apiUrl + "users/"
     result = requests.get(completeApi)
+
 
 @when('agrego un user')
 def add_user(context):
     global result, bodyJson
     bodyJson = json.loads(body2)
-    requests.post(completeApi, json = bodyJson)
+    requests.post(completeApi, json=bodyJson)
 
 
 @when('solicito la información con el identificador')
@@ -66,45 +72,52 @@ def user_by_id(context):
     api = completeApi + id
     result = requests.get(api)
 
+
 @when('modifico el user')
 def modify_user(context):
     global result, url
     url = completeApi + id
     bodyJson = json.loads(body4Edited)
-    result = requests.put(url, json = bodyJson)
+    result = requests.put(url, json=bodyJson)
+
 
 @when('un user está en desuso y lo elimino')
-def delete_user(context):
+def must_delete_user(context):
     global result, url
     url = completeApi + id
     result = requests.delete(url)
 
+
 @then('no me muestra ningún user')
 def not_found_users(context):
     assert result.content == empty
+
 
 @then('el sistema carga el user con el nombre y otros datos')
 def all_information(context):
     result = requests.get(completeApi)
     assert compareJsons(result.content, body2)
 
-@then( 'el sistema muestra el user con todos sus datos')
-def all_information(context):
+
+@then('el sistema muestra el user con todos sus datos')
+def get_all_information(context):
     assert compareJsons(result.content, body3)
 
-@then( 'el sistema guarda el user con los campos que le modifiqué')
+
+@then('el sistema guarda el user con los campos que le modifiqué')
 def save_user(context):
     result = requests.get(url)
     assert compareJsons(result.content, body4Edited)
     assert not compareJsons(result.content, body4)
 
-@then( 'el sistema lo borra y no muestra más su información')
+
+@then('el sistema lo borra y no muestra más su información')
 def delete_user(context):
     result = requests.get(url)
     assert not compareJsons(result.content, body5)
+
 
 def compareJsons(result, body):
     resultToCompare = result.decode()
     bodyToCompare = body.replace(": ", ":").replace(", ", ",")[0:-1]
     return bodyToCompare in resultToCompare
-

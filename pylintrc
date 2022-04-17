@@ -1,0 +1,26 @@
+[MASTER]
+
+jobs = 0
+
+[MESSAGES CONTROL]
+
+disable =
+    # Disable conventions and refactors warnings
+    C,
+    R,
+    # Errors
+    import-error,
+    no-name-in-module,
+    # Warnings:
+    fixme,
+    lost-exception,
+    using-constant-test,
+	logging-fstring-interpolation,
+
+[FORMAT]
+
+max-line-length = 88  # as in black
+
+[MISCELLANEOUS]
+
+ignored-classes=SQLObject,Registrant,scoped_session

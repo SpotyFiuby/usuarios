@@ -1,0 +1,26 @@
+[flake8]
+
+per-file-ignores =
+    tests/*.py:D103, D100
+    features/steps/*.py:D103, D100, F405, F403
+    features/*.features:D103, D100
+
+ignore =
+    E203, # Whitespace before ':'
+    E302, # Expected 2 blank lines, found 1
+    E402, # Import not at top of file
+    E501, # Line too long
+    E722, # Do not use bare 'except'
+    W503, # Line break before binary operator
+    B006, # Mutable data structures in argument defaults
+    D107, # Missing docstring in init
+    F401, # Imported but unused, pylint already does this
+select =
+    C, # McCabe complexity
+    E, # pep8 errors
+    F, # pyflakes
+    W, # pep8 warnings
+    B,  # Bugbear plugin
+    B950,
+    D,  # pydocstyle plugin
+max-line-length = 88

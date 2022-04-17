@@ -1,27 +1,36 @@
-from fastapi import APIRouter
-from .user import User, UserStatus, UserRequest, UserWithoutId
-from .helper import Message
-from fastapi.responses import JSONResponse
+# pylint: skip-file
+# TODO: remove previous comment when adding real functionality
+import json
+import os
 import random
 from datetime import datetime
-import json
+
+from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
-import os
+from fastapi.responses import JSONResponse
 
-router = APIRouter(
-    prefix="/users",
-    tags=["Users"]
-)
+from .helper import Message
+from .user import User, UserRequest, UserStatus, UserWithoutId
 
-@router.get('/',description="Fetch all users")
+router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.get('/', description="Fetch all users")
 async def get_all_users():
     return []
 
-@router.get('/{user_id}', description="Fetch a single user by Id", response_model=User, responses={404: {"model": Message}})
+
+@router.get(
+    '/{user_id}',
+    description="Fetch a single user by Id",
+    response_model=User,
+    responses={404: {"model": Message}},
+)
 async def get_user_by_id(user_id: int):
     return []
     # In case of error:
     # return JSONResponse(status_code=404, content={"message": "The user doesn't exist"})
+
 
 @router.post("/", description="Create a new user", responses={404: {"model": Message}})
 async def create_user(user_request: UserRequest):
@@ -30,15 +39,30 @@ async def create_user(user_request: UserRequest):
         # User(**user_request.dict(), id = id)
         return id
     except:
-        return JSONResponse(status_code=404, content={"message": "Error when creating new user"})
+        return JSONResponse(
+            status_code=404, content={"message": "Error when creating new user"}
+        )
 
-@router.put("/{user_id}", description="Update user by Id", responses={404: {"model": Message}})
+
+@router.put(
+    "/{user_id}", description="Update user by Id", responses={404: {"model": Message}}
+)
 def update_user(user_id: int, new_user: UserWithoutId):
     # Save in the object User like this:
-    # User(**new_user.dict(), id = user_id) 
-    return JSONResponse(status_code=404, content={"message": "The user doesn't exist. You should create it before modifying."})
+    # User(**new_user.dict(), id = user_id)
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message": "The user doesn't exist. You should create it before modifying."
+        },
+    )
 
-@router.delete("/{user_id}", description="Delete user by Id", responses={404: {"model": Message}})
+
+@router.delete(
+    "/{user_id}", description="Delete user by Id", responses={404: {"model": Message}}
+)
 def delete_user(user_id: int):
     return "The user could be deleted successfully"
-    return JSONResponse(status_code=404, content={"message": "No existe el user que se desea eliminar"})
+    return JSONResponse(
+        status_code=404, content={"message": "No existe el user que se desea eliminar"}
+    )

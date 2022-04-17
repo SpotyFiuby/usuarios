@@ -1,4 +1,4 @@
-# Usuarios - Spotyfiuba 
+# Usuarios - Spotyfiuba
 
 # Cómo comenzar:
 
