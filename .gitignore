@@ -34,6 +34,5 @@ msbuild.err
 msbuild.wrn
 __pycache__/
 Pipfile
-Procfile
 venv-usuarios/*
 .nox/*
