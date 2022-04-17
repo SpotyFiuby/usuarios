@@ -23,7 +23,7 @@ def create_app():
     def home():
         return {"message": "Spotifiuba - 2022"}
 
-    return app
+    return _app
 
 
 app = create_app()

@@ -24,14 +24,12 @@ def cop(session):
     session.run("poetry", "install")
 
     session.run("poetry", "run", "pre-commit", "install")
-    session.run(
-        "poetry", "run", "pre-commit", "run", "--show-diff-on-failure", "--all-files"
-    )
+    session.run("poetry", "run", "pre-commit", "run", "--all-files")
 
 
 @nox.session(reuse_venv=True)
 def bandit(session):
-    """Run all pre-commit hooks."""
+    """Run bandit."""
     session.install("poetry")
     session.run("poetry", "install")
 
@@ -40,7 +38,7 @@ def bandit(session):
         "run",
         "bandit",
         "-r",
-        "taller-2-spotifiuba/",
+        "usuarios/",
         "-ll",
         "-c",
         "bandit.yaml",
