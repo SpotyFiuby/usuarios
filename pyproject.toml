@@ -14,6 +14,7 @@ pytest-cov = {version = "^2.10.1", optional = true}
 behave = "^1.2.6"
 fastapi = "^0.75.1"
 gunicorn = "^20.1.0"
+psycopg2 = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 nox = "^2020.8.22"
