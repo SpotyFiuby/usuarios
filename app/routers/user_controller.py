@@ -1,5 +1,4 @@
 # pylint: skip-file
-# TODO: remove previous comment when adding real functionality
 import json
 import os
 import random
@@ -63,6 +62,6 @@ def update_user(user_id: int, new_user: UserWithoutId):
 )
 def delete_user(user_id: int):
     return "The user could be deleted successfully"
-    return JSONResponse(
-        status_code=404, content={"message": "No existe el user que se desea eliminar"}
-    )
+    # return JSONResponse(
+    #    status_code=404, content={"message": "No existe el user que se desea eliminar"}
+    # )

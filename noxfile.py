@@ -38,7 +38,7 @@ def bandit(session):
         "run",
         "bandit",
         "-r",
-        "usuarios/",
+        "app/",
         "-ll",
         "-c",
         "bandit.yaml",
