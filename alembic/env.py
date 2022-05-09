@@ -29,8 +29,15 @@ target_metadata = Base.metadata
 # ... etc.
 
 
+def fix_dialect(s):
+    if s.startswith("postgres://"):
+        s = s.replace("postgres://", "postgresql://")
+    s = s.replace("postgresql://", "postgresql+psycopg2://")
+    return s
+
+
 def get_url():
-    return os.getenv("DATABASE_URL")
+    return fix_dialect(os.getenv("DATABASE_URL"))
 
 
 def run_migrations_offline():
