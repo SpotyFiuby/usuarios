@@ -8,13 +8,22 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.api import api_router
 
 
+def fix_dialect(s):
+    if s.startswith("postgres://"):
+        s = s.replace("postgres://", "postgresql://")
+    s = s.replace("postgresql://", "postgresql+psycopg2://")
+    return s
+
+
 # For testing purposes
 def create_app():
     _app = FastAPI()
 
     origins = ["*"]
 
-    _app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
+    db_url = fix_dialect(os.environ["DATABASE_URL"])
+
+    _app.add_middleware(DBSessionMiddleware, db_url=db_url)
     _app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
