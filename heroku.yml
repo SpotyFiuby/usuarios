@@ -4,8 +4,6 @@ build:
 release:
   image: web
   command:
-    - poetry run alembic stamp head
-    - poetry run alembic revision --autogenerate -m "New Migration"
-    - poetry run alembic upgrade head
+    - ./release-tasks.sh
 run:
   web: gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app
