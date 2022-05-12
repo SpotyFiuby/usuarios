@@ -19,7 +19,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.db.base import Base  # noqa
+#from app.db.base import Base  # noqa
+from app.models.users import Base, Users  # noqa
 
 target_metadata = Base.metadata
 
@@ -28,6 +29,12 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table" and reflected and compare_to is None:
+        return False
+    else:
+        return True
 
 def fix_dialect(s):
     if s.startswith("postgres://"):
@@ -54,7 +61,7 @@ def run_migrations_offline():
     """
     url = get_url()
     context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True
+        url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True, include_object = include_object
     )
 
     with context.begin_transaction():
@@ -78,7 +85,7 @@ def run_migrations_online():
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata, compare_type=True
+            connection=connection, target_metadata=target_metadata, compare_type=True, include_object = include_object
         )
 
         with context.begin_transaction():
