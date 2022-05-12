@@ -20,4 +20,3 @@ envSpotifiuby/
 venv-usuarios/
 pre-commit/
 .nox/*
-.env
