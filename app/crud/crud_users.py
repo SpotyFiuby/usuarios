@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.crud.base import CRUDBase
 from app.models.users import Users
 from app.schemas.users import UserCreate, UserUpdate
-
+from app.core.security import get_password_hash, verify_password
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
     def get_by_email(self, db: Session, *, email: str) -> Optional[Users]:
@@ -17,6 +17,7 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
             firstName=obj_in.firstName,
             lastName=obj_in.lastName,
             phoneNumber=obj_in.phoneNumber,
+            password=get_password_hash(obj_in.password),
         )
         db.add(db_obj)
         db.commit()
@@ -31,6 +32,14 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
+
+    def authenticate(self, db, email: str, password: str):
+        user = self.get_by_email(db, email=email)
+        if not user:
+            return None
+        if not verify_password(password, user.password):
+            return None
+        return user
 
 
 users = CRUDUser(Users)
