@@ -23,7 +23,7 @@ source venv/bin/activate
 ```
 Instalar los paquetes (necesario para manejar dependencias):
 ```
-pip install fastapi fastapi-sqlalchemy pydantic alembic psycopg2 uvicorn python-dotenv pydantic[email]
+pip install fastapi fastapi-sqlalchemy pydantic alembic psycopg2 uvicorn python-dotenv pydantic[email] firebase-admin python-multipart python-jose[cryptography] passlib
 ```
 
 ## Cómo levantar el servidor usando Docker:
