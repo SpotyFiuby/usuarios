@@ -15,3 +15,4 @@ class Users(Base):
     phoneNumber = Column(String, index=True)
     dateCreate = Column(DateTime, default=datetime.datetime.utcnow)
     time_updated = Column(DateTime(timezone=True), onupdate=datetime.datetime.utcnow)
+    password = Column(String, nullable=False)
