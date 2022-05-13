@@ -26,6 +26,10 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserSignIn(BaseModel):
+    email: EmailStr
+    password: str
+
 # Properties to receive via API on update
 class UserUpdate(UserBase):
     pass
