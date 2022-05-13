@@ -14,7 +14,7 @@ class UserBase(BaseModel):
 
 class UserInDBBase(UserBase):
     id: int
-    dateCreate: datetime.datetime
+    dateCreated: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -28,7 +28,7 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    password: Optional[str] = None
+    pass
 
 
 # Additional properties to return via API
