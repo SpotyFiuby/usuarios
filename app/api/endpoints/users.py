@@ -7,9 +7,8 @@ from app.crud.crud_users import users as users_crud
 
 # import getDB from app/db/database.py
 from app.db.database import getDB
-from app.schemas.users import Users, UserCreate
+from app.schemas.users import Users
 
-from app.api.firebase import auth
 
 router = APIRouter()
 
@@ -30,28 +29,6 @@ def readUsers(
             detail="Error getting all the users.",
         )
     return users
-
-
-@router.post("/", response_model=Users)
-def createUser(
-    *,
-    db: Session = Depends(getDB),
-    user_in: UserCreate,
-) -> Any:
-    """
-    Create new user.
-    """
-    user = users_crud.get_by_email(db, email=user_in.email)
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this username already exists in the system.",
-        )
-    user = users_crud.create(db, obj_in=user_in)
-    # check if user phone number is already in the system using firebase_admin._auth_utils.PhoneNumberAlreadyExistsError
-    auth.create_user(email=user_in.email,
-                     phone_number=user_in.phoneNumber)
-    return user
 
 
 @router.get("/{user_id}", response_model=Users)
