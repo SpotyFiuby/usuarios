@@ -10,17 +10,10 @@ from app.core.security import ALGORITHM, SECRET_KEY, create_access_token, oauth2
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
-def generate_token(db, username, password):
-    user = users_crud.authenticate(db, username, password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email/username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+def generate_token(db, email):
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     return create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": email}, expires_delta=access_token_expires
     )
 
 
