@@ -1,17 +1,17 @@
-"""trying to add users table
+"""New Migration
 
-Revision ID: 4239d87582b1
-Revises: 40739a580bac
-Create Date: 2022-04-23 23:12:45.630010
+Revision ID: 676a8aa0c124
+Revises:
+Create Date: 2022-05-14 02:21:56.747274
 
 """
-# import sqlalchemy as sa
+import sqlalchemy as sa
 
-# from alembic import op
+from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '4239d87582b1'
-down_revision = '40739a580bac'
+revision = '676a8aa0c124'
+down_revision = None
 branch_labels = None
 depends_on = None
 
