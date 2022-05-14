@@ -1,12 +1,16 @@
-FROM python:3
-ENV PYTHONUNBUFFERED=1
-# RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+FROM python:3.9.12
+
 WORKDIR /app
-COPY requirements.txt requirements.txt
-RUN pip3 install --upgrade pip
-RUN pip3 install pydantic[email]
-RUN pip3 install -r requirements.txt
-COPY poetry.lock pyproject.toml /app/
-RUN POETRY_VIRTUALENVS_CREATE=false poetry install --no-interaction --no-ansi
+
+ENV POETRY_VERSION=1.1.13
+
+# Install Python env
+RUN pip install "poetry==$POETRY_VERSION"
+RUN poetry config virtualenvs.create false
+COPY ./pyproject.toml /app/
+COPY ./poetry.lock /app/
+RUN poetry install
+
 COPY . /app
-EXPOSE 8000
+
+CMD ["poetry", "run", "uvicorn", "main:app", "--log-level", "debug", "--reload", "--host", "0.0.0.0", "--port", "8080"]

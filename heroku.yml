@@ -4,6 +4,6 @@ build:
 release:
   image: web
   command:
-    - ./release-tasks.sh
+    - alembic upgrade head
 run:
   web: gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app
