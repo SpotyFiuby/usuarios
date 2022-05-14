@@ -31,7 +31,7 @@ repos:
       language: system
       types: [python]
       stages: [commit]
-      # exclude:
+      exclude: alembic/env.py
     - id: pylint
       name: pylint
       entry: poetry run pylint
