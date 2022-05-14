@@ -18,6 +18,5 @@ __pycache__/
 venv/
 envSpotifiuby/
 usuarios-taller2/
-pre-commit/
 .nox/*
 .env
