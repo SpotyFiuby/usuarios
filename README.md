@@ -52,5 +52,5 @@ Con el flag -m se crea un comentario para la nueva migración.
 
 Luego, una vez hecho esto, hacemos que las migraciones persistan en la base de datos con el siguiente comando:
 ```
-docker-compose run app alembic upgrade head
+
 ```
