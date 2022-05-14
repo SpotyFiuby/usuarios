@@ -6,25 +6,21 @@ Módulo Proyectos del sistema para la empresa PSA - Análisis de la Información
 ### Requerimientos:
 Python 3.6+
 
-### Para completar los pre-commit hooks:
-Eliminar la siguiente línea del archivo app/routers/user_controller.py
-```
-# pylint: skip-file
-```
-
 ## Cómo instalar FastAPI:
-Instalar el entorno virtual venv :
+Instalar el entorno virtual venv:
 ```
-python3 -m venv venv
+python3 -m venv <nombre-del-venv>
 ```
 Activar el entorno virtual usando:
 ```
-source venv/bin/activate
+source <nombre-del-venv>/bin/activate
 ```
-Instalar los paquetes (necesario para manejar dependencias):
+Instalar las dependencias necesarias:
 ```
-pip install fastapi fastapi-sqlalchemy pydantic alembic psycopg2 uvicorn python-dotenv pydantic[email]
+poetry install
 ```
+
+<u>Consejo</u>: agregar en el archivo .gitignore nombre del venv elegido, para evitar subirlo por error.
 
 ## Cómo levantar el servidor usando Docker:
 
