@@ -7,7 +7,6 @@ import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-# import crud users
 from app import crud
 from app.api.firebase import FIREBASE_WEB_API_KEY, auth
 from app.core.security import create_access_token
