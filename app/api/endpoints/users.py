@@ -4,8 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.crud.crud_users import users as users_crud
-
-# import getDB from app/db/database.py
 from app.db.database import getDB
 from app.schemas.users import Users
 
