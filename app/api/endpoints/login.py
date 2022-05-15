@@ -1,36 +1,17 @@
-# type: ignore
-import json
 from typing import Any
 
-import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud
-from app.api.firebase import FIREBASE_WEB_API_KEY, auth
+from app.api.firebase import auth
+from app.api.utils import sign_in_with_email_and_password
 from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import UserCreate, UserSignIn
 
 router = APIRouter()
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
-
-
-def sign_in_with_email_and_password(email, password, return_secure_token=True):
-    payload = json.dumps(
-        {
-            "email": email,
-            "password": password,
-            "return_secure_token": return_secure_token,
-        }
-    )
-    rest_api_url = (
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-    )
-
-    r = requests.post(rest_api_url, params={"key": FIREBASE_WEB_API_KEY}, data=payload)
-
-    return r.json()
 
 
 @router.post("/signin", response_model=Any)

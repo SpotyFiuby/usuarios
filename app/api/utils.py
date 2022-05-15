@@ -1,8 +1,11 @@
+import json
 from datetime import timedelta
 
+import requests
 from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 
+from app.api.firebase import FIREBASE_WEB_API_KEY
 from app.core.security import ALGORITHM, SECRET_KEY, create_access_token, oauth2_scheme
 from app.crud.crud_users import users as users_crud
 from app.schemas.token import TokenPayload
@@ -36,3 +39,20 @@ def get_current_user(db, token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
     return user
+
+
+def sign_in_with_email_and_password(email, password, return_secure_token=True):
+    payload = json.dumps(
+        {
+            "email": email,
+            "password": password,
+            "return_secure_token": return_secure_token,
+        }
+    )
+    rest_api_url = (
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+    )
+
+    r = requests.post(rest_api_url, params={"key": FIREBASE_WEB_API_KEY}, data=payload)
+
+    return r.json()
