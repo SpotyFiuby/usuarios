@@ -7,7 +7,6 @@ from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import Users
 
-
 router = APIRouter()
 
 

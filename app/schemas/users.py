@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
@@ -29,6 +28,7 @@ class UserCreate(UserBase):
 class UserSignIn(BaseModel):
     email: EmailStr
     password: str
+
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
