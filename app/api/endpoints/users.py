@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
-from app.schemas.users import Users
+from app.schemas.users import UserProfile, UserProfileModify, Users
 
 router = APIRouter()
 
@@ -22,7 +22,7 @@ def readUsers(
     users = users_crud.get_multi(db, skip=skip, limit=limit)
     if not users:
         raise HTTPException(
-            status_code=400,
+            status_code=404,
             detail="Error getting all the users.",
         )
     return users
@@ -47,7 +47,7 @@ def createUser(
     return user
 
 
-@router.get("/{user_id}", response_model=Users)
+@router.get("/{user_id}", response_model=UserProfile)
 def readUserByID(
     user_id: int,
     db: Session = Depends(getDB),
@@ -64,12 +64,12 @@ def readUserByID(
     return user
 
 
-@router.put("/{user_id}", response_model=Users)
+@router.put("/{user_id}", response_model=UserProfileModify)
 def updateUser(
     *,
     db: Session = Depends(getDB),
     user_id: int,
-    user_in: Users,
+    user_in: UserProfileModify,
 ) -> Any:
     """
     Update a user.
