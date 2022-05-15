@@ -73,13 +73,15 @@ def signup(
     user = users_crud.get_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
-            status_code=409,
+            status_code=401,
             detail="The user with this username already exists in the system.",
         )
     user = users_crud.create(db, obj_in=user_in)
-    # check if user phone number is already in the system using firebase_admin._auth_utils.PhoneNumberAlreadyExistsError
-    auth.create_user(email=user_in.email,
-                     phone_number=user_in.phoneNumber)
+    try:
+        auth.create_user(email=user_in.email,
+                         phone_number=user_in.phoneNumber)
+    except Exception:
+        return HTTPException(status_code=401, detail="User already exists.")
 
     return {
         "access_token": create_access_token(
