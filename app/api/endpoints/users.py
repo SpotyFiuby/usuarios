@@ -28,25 +28,6 @@ def readUsers(
     return users
 
 
-@router.post("/", response_model=Users)
-def createUser(
-    *,
-    db: Session = Depends(getDB),
-    user_in: Users,
-) -> Any:
-    """
-    Create new user.
-    """
-    user = users_crud.get_by_email(db, email=user_in.email)
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this username already exists in the system.",
-        )
-    user = users_crud.create(db, obj_in=user_in)
-    return user
-
-
 @router.get("/{user_id}", response_model=Users)
 def readUserByID(
     user_id: int,

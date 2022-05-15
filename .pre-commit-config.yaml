@@ -40,7 +40,7 @@ repos:
       stages: [commit]
       # args: [--load-plugins, ]
       exclude: alembic/versions/*
--   repo: git://github.com/pre-commit/pre-commit-hooks
+-   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.5.0
     hooks:
     - id: trailing-whitespace
