@@ -25,13 +25,6 @@ repos:
       stages: [commit]
       args: [--max-line-length=88]
       # exclude:
-    - id: mypy
-      name: mypy
-      entry: poetry run mypy
-      language: system
-      types: [python]
-      stages: [commit]
-      exclude: alembic/env.py
     - id: pylint
       name: pylint
       entry: poetry run pylint
