@@ -15,7 +15,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 
 @router.post("/signin", response_model=Any)
-def login(db: Session = Depends(getDB), form_data: UserSignIn = Depends()) -> Any:
+def login(*, db: Session = Depends(getDB), form_data: UserSignIn) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
