@@ -32,5 +32,13 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
 
+    def authenticate(self, db, email: str):
+        user = self.get_by_email(db, email=email)
+        if not user:
+            return None
+        # if not verify_password(password, user.password):
+        #    return None
+        return user
+
 
 users = CRUDUser(Users)

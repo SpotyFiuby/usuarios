@@ -1,6 +1,3 @@
-import datetime
-from typing import Optional
-
 from pydantic import BaseModel, EmailStr
 
 
@@ -22,7 +19,6 @@ class UserBaseComplete(UserBase):
 
 class UserInDBBase(UserBaseComplete):
     id: int
-    dateCreate: datetime.datetime
 
 
 # Properties to receive via API on creation
@@ -31,9 +27,14 @@ class UserCreate(UserBaseComplete):
     password: str
 
 
+class UserSignIn(BaseModel):
+    email: EmailStr
+    password: str
+
+
 # Properties to receive via API on update
 class UserUpdate(UserBaseComplete):
-    password: Optional[str] = None
+    pass
 
 
 # Additional properties to return via API

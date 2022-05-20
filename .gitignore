@@ -6,17 +6,13 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-*.lock
 *.pyc
-Pipfile
 .DS_Store
-*.txt
 __pycache__/
 
 # Local History for Visual Studio Code
 .history/
 venv/
 envSpotifiuby/
-usuarios-taller2/
+usuarios-taller/
 .nox/*
-.env
