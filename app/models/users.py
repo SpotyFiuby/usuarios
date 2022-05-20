@@ -1,6 +1,5 @@
-import datetime
-
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.dialects.postgresql import BYTEA
 
 from app.db.database import Base
 
@@ -13,5 +12,6 @@ class Users(Base):
     lastName = Column(String)
     email = Column(String, unique=True, index=True, nullable=False)
     phoneNumber = Column(String, index=True)
-    dateCreated = Column(DateTime, default=datetime.datetime.utcnow)
-    dateUpdated = Column(DateTime(timezone=True), onupdate=datetime.datetime.utcnow)
+    profileImage = Column(BYTEA, default=b'')
+    isPremium = Column(Boolean, nullable=False, default=False)
+    isArtist = Column(Boolean, nullable=False, default=False)

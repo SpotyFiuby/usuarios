@@ -1,26 +1,28 @@
-import datetime
-
 from pydantic import BaseModel, EmailStr
 
 
-# Shared properties
-class UserBase(BaseModel):
-    firstName: str
-    lastName: str
-    email: EmailStr
-    phoneNumber: str
-
-
-class UserInDBBase(UserBase):
-    id: int
-    dateCreated: datetime.datetime
-
+class CustomBaseModel(BaseModel):
     class Config:
         orm_mode = True
 
 
+# Shared properties
+class UserBase(CustomBaseModel):
+    firstName: str
+    lastName: str
+
+
+class UserBaseComplete(UserBase):
+    email: EmailStr
+    phoneNumber: str
+
+
+class UserInDBBase(UserBaseComplete):
+    id: int
+
+
 # Properties to receive via API on creation
-class UserCreate(UserBase):
+class UserCreate(UserBaseComplete):
     email: EmailStr
     password: str
 
@@ -31,10 +33,21 @@ class UserSignIn(BaseModel):
 
 
 # Properties to receive via API on update
-class UserUpdate(UserBase):
+class UserUpdate(UserBaseComplete):
     pass
 
 
 # Additional properties to return via API
 class Users(UserInDBBase):
     pass
+
+
+class UserProfile(UserBaseComplete):
+    isPremium: bool = False
+    isArtist: bool = False
+    profileImage: bytes = b''
+
+
+class UserProfileModify(UserBase):
+    isArtist: bool = False
+    profileImage: bytes = b''

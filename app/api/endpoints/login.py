@@ -47,13 +47,14 @@ def signup(
     try:
         firebase_user = auth.create_user(email=user_in.email, password=user_in.password)
     except Exception as e:
-        raise HTTPException(status_code=401, detail="User already exists.") from e
+        print(e)
+        raise HTTPException(status_code=409, detail="User already exists.") from e
 
     user = users_crud.get_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
-            status_code=401,
-            detail="The user with this username already exists in the system.",
+            status_code=409,
+            detail="The user with this email already exists in the system.",
         )
     user = users_crud.create(db, obj_in=user_in)
 

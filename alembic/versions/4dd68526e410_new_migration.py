@@ -1,16 +1,17 @@
 """New Migration
 
-Revision ID: ff6df872411c
-Revises: None
-Create Date: 2022-05-16 22:08:06.899067
+Revision ID: 4dd68526e410
+Revises:
+Create Date: 2022-05-20 02:10:44.136910
 
 """
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = 'ff6df872411c'
+revision = '4dd68526e410'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,8 +26,9 @@ def upgrade():
         sa.Column('lastName', sa.String(), nullable=True),
         sa.Column('email', sa.String(), nullable=False),
         sa.Column('phoneNumber', sa.String(), nullable=True),
-        sa.Column('dateCreated', sa.DateTime(), nullable=True),
-        sa.Column('dateUpdated', sa.DateTime(timezone=True), nullable=True),
+        sa.Column('profileImage', postgresql.BYTEA(), nullable=True),
+        sa.Column('isPremium', sa.Boolean(), nullable=False),
+        sa.Column('isArtist', sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
