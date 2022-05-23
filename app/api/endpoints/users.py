@@ -72,10 +72,27 @@ def deleteUser(
     user_id: int,
 ) -> Any:
     """
-    Delete an item.
+    Delete an user.
     """
     user = users_crud.get(db, Id=user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="User not found")
     user = users_crud.remove(db=db, Id=user_id)
+    return user
+
+
+@router.get("/{user_email}", response_model=UserProfile)
+def readUserByEmail(
+    user_email: int,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Get a specific user by email.
+    """
+    user = users_crud.get_by_email(db, email=user_email)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
     return user
