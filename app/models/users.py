@@ -14,4 +14,3 @@ class Users(Base):
     phoneNumber = Column(String, index=True)
     profileImage = Column(BYTEA, default=b'')
     isPremium = Column(Boolean, nullable=False, default=False)
-    isArtist = Column(Boolean, nullable=False, default=False)
