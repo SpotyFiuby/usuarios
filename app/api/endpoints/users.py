@@ -83,7 +83,7 @@ def deleteUser(
 
 @router.get("/{user_email}", response_model=UserProfile)
 def readUserByEmail(
-    user_email: int,
+    user_email: str,
     db: Session = Depends(getDB),
 ) -> Any:
     """
