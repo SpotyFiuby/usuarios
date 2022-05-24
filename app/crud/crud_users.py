@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
@@ -8,7 +9,7 @@ from app.schemas.users import UserCreate, UserUpdate
 
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
-    def get_by_email(self, db: Session, *, email: str) -> Optional[Users]:
+    def get_by_email(self, db: Session, *, email: EmailStr) -> Optional[Users]:
         return db.query(Users).filter(Users.email == email).first()
 
     def create(self, db: Session, *, obj_in: UserCreate) -> Users:

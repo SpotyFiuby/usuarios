@@ -1,6 +1,7 @@
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from app.crud.crud_users import users as users_crud
@@ -83,7 +84,7 @@ def deleteUser(
 
 @router.get("/{user_email}", response_model=UserProfile)
 def readUserByEmail(
-    user_email: str,
+    user_email: EmailStr,
     db: Session = Depends(getDB),
 ) -> Any:
     """
