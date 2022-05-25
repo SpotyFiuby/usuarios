@@ -82,7 +82,7 @@ def deleteUser(
     return user
 
 
-@router.get("/{user_email}", response_model=UserProfile)
+@router.get("/email/{user_email}", response_model=UserProfile)
 def readUserByEmail(
     user_email: EmailStr,
     db: Session = Depends(getDB),
