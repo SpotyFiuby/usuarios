@@ -15,3 +15,6 @@ class Users(Base):
     profileImage = Column(BYTEA, default=b'')
     isPremium = Column(Boolean, nullable=False, default=False)
     isArtist = Column(Boolean, nullable=False, default=False, server_default='False')
+    username = Column(String)
+    location = Column(String)
+    biography: str = Column(String)
