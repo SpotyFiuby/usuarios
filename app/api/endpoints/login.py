@@ -31,7 +31,11 @@ def login(*, db: Session = Depends(getDB), form_data: UserSignIn) -> Any:
         raise HTTPException(status_code=400, detail="Incorrect email")
 
     firebase_token = auth.create_custom_token(firebase_user["localId"])
-    return {"token": firebase_token}
+    userId = user.id
+    return {
+        "token": firebase_token,
+        "userId": userId,
+    }
 
 
 @router.post("/signup", response_model=Any)
