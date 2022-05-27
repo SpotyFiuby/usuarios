@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Optional
 
 
 class CustomBaseModel(BaseModel):
@@ -54,6 +54,6 @@ class UserProfile(UserBaseComplete):
 class UserProfileModify(UserBase):
     isArtist: bool = False
     profileImage: bytes = b''
-    username: str = ''
-    location: str = ''
-    biography: str = ''
+    username: Optional[str] = ''
+    location: Optional[str] = ''
+    biography: Optional[str] = ''
