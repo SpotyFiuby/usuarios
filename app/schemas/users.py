@@ -46,8 +46,14 @@ class UserProfile(UserBaseComplete):
     isPremium: bool = False
     isArtist: bool = False
     profileImage: bytes = b''
+    username: str = ''
+    location: str = ''
+    biography: str = ''
 
 
 class UserProfileModify(UserBase):
     isArtist: bool = False
     profileImage: bytes = b''
+    username: str = ''
+    location: str = ''
+    biography: str = ''
