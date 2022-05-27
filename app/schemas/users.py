@@ -1,4 +1,6 @@
-from pydantic import BaseModel, EmailStr, Optional
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class CustomBaseModel(BaseModel):
