@@ -61,6 +61,6 @@ def signup(
             detail="The user with this email already exists in the system.",
         )
     user = users_crud.create(db, obj_in=user_in)
-
+    userId = user.id
     firebase_token = auth.create_custom_token(firebase_user.uid)
-    return {"token": firebase_token}
+    return {"token": firebase_token, "userId": userId}
