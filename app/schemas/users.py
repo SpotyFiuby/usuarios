@@ -47,7 +47,7 @@ class Users(UserInDBBase):
 class UserProfile(UserBaseComplete):
     isPremium: bool = False
     isArtist: bool = False
-    profileImage: bytes = b''
+    profileImage: Optional[str] = ''
     username: Optional[str] = ''
     location: Optional[str] = ''
     biography: Optional[str] = ''
@@ -55,7 +55,7 @@ class UserProfile(UserBaseComplete):
 
 class UserProfileModify(UserBase):
     isArtist: bool = False
-    profileImage: bytes = b''
+    profileImage: Optional[str] = ''
     username: Optional[str] = ''
     location: Optional[str] = ''
     biography: Optional[str] = ''
