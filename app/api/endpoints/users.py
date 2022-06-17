@@ -99,7 +99,7 @@ def readUserByEmail(
     return user
 
 
-@router.get("/search_prefix_email/{user_email}", response_model=List[Users])
+@router.get("/search_prefix_email/{user_email}", response_model=List[UserProfile])
 def searchPrefixUsers(
     email_prefix: str, limit: int = 100, db: Session = Depends(getDB)
 ) -> Any:

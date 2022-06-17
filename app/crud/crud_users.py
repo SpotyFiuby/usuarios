@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.users import Users
-from app.schemas.users import UserCreate, UserUpdate
+from app.schemas.users import UserCreate, UserProfile, UserUpdate
 
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
@@ -43,7 +43,7 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
 
     def user_email_prefix(
         self, db: Session, *, emailPrefix: str, limit: int = 100
-    ) -> List[Users]:
+    ) -> List[UserProfile]:
         return (
             db.query(Users)
             .filter(Users.email.like(emailPrefix + "%"))
