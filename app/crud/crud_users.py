@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
@@ -40,6 +40,16 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         # if not verify_password(password, user.password):
         #    return None
         return user
+
+    def user_email_prefix(
+        self, db: Session, *, emailPrefix: str, limit: int = 100
+    ) -> List[Users]:
+        return (
+            db.query(Users)
+            .filter(Users.email.like(emailPrefix + "%"))
+            .limit(limit)
+            .all()
+        )
 
 
 users = CRUDUser(Users)

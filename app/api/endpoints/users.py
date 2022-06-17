@@ -97,3 +97,19 @@ def readUserByEmail(
             detail="The user does not exist in the system",
         )
     return user
+
+
+@router.get("/search_prefix_email/{user_email}", response_model=List[Users])
+def searchPrefixUsers(
+    email_prefix: str, limit: int = 100, db: Session = Depends(getDB)
+) -> Any:
+    """
+    Retrieve users by a certain criteria.
+    """
+    users = users_crud.user_email_prefix(db, emailPrefix=email_prefix, limit=limit)
+    if not users:
+        raise HTTPException(
+            status_code=404,
+            detail="There aren't any users with the search criteria.",
+        )
+    return users
