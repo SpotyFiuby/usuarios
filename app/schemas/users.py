@@ -51,6 +51,7 @@ class UserProfile(UserBaseComplete):
     username: Optional[str] = ''
     location: Optional[str] = ''
     biography: Optional[str] = ''
+    id: int
 
 
 class UserProfileModify(UserBase):
