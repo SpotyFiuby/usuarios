@@ -1,6 +1,7 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import ARRAY, Boolean, Column, Integer, String
 
 from app.db.database import Base
+from app.models.sqlal_mutable_array import MutableList
 
 
 class Users(Base):
@@ -20,3 +21,5 @@ class Users(Base):
     username = Column(String)
     location = Column(String)
     biography: str = Column(String)
+    following = Column(MutableList.as_mutable(ARRAY(Integer())), default=[])
+    followers = Column(MutableList.as_mutable(ARRAY(Integer())), default=[])
