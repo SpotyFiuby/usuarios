@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.users import Users
-from app.schemas.users import UserCreate, UserProfile, UserUpdate
+from app.schemas.users import UserCreate, UserFollow, UserProfile, UserUpdate
 
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
@@ -50,6 +50,49 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
             .limit(limit)
             .all()
         )
+
+    def updateUserFollowers(
+        self, db: Session, *, db_obj: Users, obj_follower: int
+    ) -> UserFollow:
+        # add user to user followers
+        db_obj.followers.append(obj_follower)
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    def updateUserFollowing(
+        self, db: Session, *, db_obj: Users, obj_following: int
+    ) -> UserFollow:
+        db_obj.following.append(obj_following)
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    def deleteUserFromFollower(
+        self, db: Session, *, db_obj: Users, obj_follower: int
+    ) -> List[UserFollow]:
+        # remove user from user's follower list
+        db_obj.followers.remove(obj_follower)
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    def deleteUserFromFollowing(
+        self, db: Session, *, db_obj: Users, obj_following: int
+    ) -> List[UserFollow]:
+        # remove user from user's following list
+        db_obj.following.remove(obj_following)
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
 
 
 users = CRUDUser(Users)
