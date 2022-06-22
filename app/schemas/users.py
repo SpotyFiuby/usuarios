@@ -52,6 +52,8 @@ class UserProfile(UserBaseComplete):
     location: Optional[str] = ''
     biography: Optional[str] = ''
     id: int
+    following: List[int] = []
+    followers: List[int] = []
 
 
 class UserProfileModify(UserBase):
