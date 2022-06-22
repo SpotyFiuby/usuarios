@@ -11,7 +11,7 @@ from app.schemas.users import UserFollow, UserProfile, UserProfileModify, Users
 router = APIRouter()
 
 
-@router.get("/", response_model=List[Users])
+@router.get("/", response_model=List[UserProfile])
 def readUsers(
     db: Session = Depends(getDB),
     skip: int = 0,
