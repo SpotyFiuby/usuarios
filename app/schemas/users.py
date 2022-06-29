@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr
 
@@ -52,6 +52,8 @@ class UserProfile(UserBaseComplete):
     location: Optional[str] = ''
     biography: Optional[str] = ''
     id: int
+    following: List[int] = []
+    followers: List[int] = []
 
 
 class UserProfileModify(UserBase):
@@ -60,3 +62,8 @@ class UserProfileModify(UserBase):
     username: Optional[str] = ''
     location: Optional[str] = ''
     biography: Optional[str] = ''
+
+
+class UserFollow(UserProfile):
+    following: List[int] = []
+    followers: List[int] = []

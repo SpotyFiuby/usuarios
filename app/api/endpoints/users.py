@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 
 from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
-from app.schemas.users import UserProfile, UserProfileModify, Users
+from app.schemas.users import UserFollow, UserProfile, UserProfileModify, Users
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[Users])
+@router.get("/", response_model=List[UserProfile])
 def readUsers(
     db: Session = Depends(getDB),
     skip: int = 0,
@@ -113,3 +113,95 @@ def searchPrefixUsers(
             detail="There aren't any users with the search criteria.",
         )
     return users
+
+
+@router.put("/user_artist_followers/{user_id}", response_model=UserFollow)
+def userArtistFollowers(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_favourite: int,
+) -> Any:
+    """
+    Update a user with user followers.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.updateUserFollowers(
+        db, db_obj=user, obj_follower=user_favourite
+    )
+    return userUpdated
+
+
+@router.put("/user_artist_followings/{user_id}", response_model=UserFollow)
+def userArtistFollowings(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_favourite: int,
+) -> Any:
+    """
+    Update a user with user following.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.updateUserFollowing(
+        db, db_obj=user, obj_following=user_favourite
+    )
+    return userUpdated
+
+
+@router.put("/user_artist_followings/{user_id}/{artist_id}", response_model=UserFollow)
+def deleteUserArtistFollowings(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_favourite: int,
+) -> Any:
+    """
+    Delete a user from a followings list.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.deleteUserFromFollowing(
+        db, db_obj=user, obj_following=user_favourite
+    )
+    return userUpdated
+
+
+@router.put("/user_artist_follower/{user_id}/{artist_id}", response_model=UserFollow)
+def deleteUserArtistFollowers(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_favourite: int,
+) -> Any:
+    """
+    Delete a user from a followers list.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.deleteUserFromFollower(
+        db, db_obj=user, obj_follower=user_favourite
+    )
+    return userUpdated
