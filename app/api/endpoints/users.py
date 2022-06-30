@@ -245,3 +245,50 @@ def getFollowingsAmount(
         )
     followers_amount = users_crud.get_amounts_of_followings(db_obj=user)
     return followers_amount
+
+
+def getFollowUser(db, idsList):
+    followers = []
+    for userId in idsList:
+        user = users_crud.get(db, Id=userId)
+        if not user:
+            print("user id: {} not found".format(id))
+        followers.append(user)
+
+    return followers
+
+
+@router.get("/user_followers/{user_id}", response_model=List[UserProfile])
+def getFollowersProfile(
+    user_id: int,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Retrieve user followers profile.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    followersList = user.followers
+    return getFollowUser(db, followersList)
+
+
+@router.get("/user_followings/{user_id}", response_model=List[UserProfile])
+def getFollowingsProfile(
+    user_id: int,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Retrieve user followings profile.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    followingsList = user.following
+    return getFollowUser(db, followingsList)
