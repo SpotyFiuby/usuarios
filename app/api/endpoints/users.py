@@ -161,7 +161,9 @@ def userArtistFollowings(
     return userUpdated
 
 
-@router.put("/user_artist_followings/{user_id}/{artist_id}", response_model=UserFollow)
+@router.delete(
+    "/user_artist_followings/{user_id}/{artist_id}", response_model=UserFollow
+)
 def deleteUserArtistFollowings(
     *,
     db: Session = Depends(getDB),
@@ -184,7 +186,7 @@ def deleteUserArtistFollowings(
     return userUpdated
 
 
-@router.put("/user_artist_follower/{user_id}/{artist_id}", response_model=UserFollow)
+@router.delete("/user_artist_follower/{user_id}/{artist_id}", response_model=UserFollow)
 def deleteUserArtistFollowers(
     *,
     db: Session = Depends(getDB),
