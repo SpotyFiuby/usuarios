@@ -205,3 +205,41 @@ def deleteUserArtistFollowers(
         db, db_obj=user, obj_follower=user_favourite
     )
     return userUpdated
+
+
+@router.get("/followers_amount/")
+def getFollowersAmount(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+) -> Any:
+    """
+    Retrieve user followers.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    followers_amount = users_crud.get_amounts_of_followers(db_obj=user)
+    return followers_amount
+
+
+@router.get("/followings_amount/")
+def getFollowingsAmount(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+) -> Any:
+    """
+    Retrieve user followings.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    followers_amount = users_crud.get_amounts_of_followings(db_obj=user)
+    return followers_amount
