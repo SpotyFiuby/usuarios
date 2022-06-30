@@ -94,5 +94,13 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         db.refresh(db_obj)
         return db_obj
 
+    def get_amounts_of_followers(self, db_obj: Users) -> Optional[Users]:
+        len_followers = len(db_obj.followers)
+        return len_followers
+
+    def get_amounts_of_followings(self, db_obj: Users) -> Optional[Users]:
+        len_followings = len(db_obj.following)
+        return len_followings
+
 
 users = CRUDUser(Users)

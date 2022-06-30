@@ -161,7 +161,9 @@ def userArtistFollowings(
     return userUpdated
 
 
-@router.put("/user_artist_followings/{user_id}/{artist_id}", response_model=UserFollow)
+@router.delete(
+    "/user_artist_followings/{user_id}/{artist_id}", response_model=UserFollow
+)
 def deleteUserArtistFollowings(
     *,
     db: Session = Depends(getDB),
@@ -184,7 +186,7 @@ def deleteUserArtistFollowings(
     return userUpdated
 
 
-@router.put("/user_artist_follower/{user_id}/{artist_id}", response_model=UserFollow)
+@router.delete("/user_artist_follower/{user_id}/{artist_id}", response_model=UserFollow)
 def deleteUserArtistFollowers(
     *,
     db: Session = Depends(getDB),
@@ -205,3 +207,41 @@ def deleteUserArtistFollowers(
         db, db_obj=user, obj_follower=user_favourite
     )
     return userUpdated
+
+
+@router.get("/followers_amount/")
+def getFollowersAmount(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+) -> Any:
+    """
+    Retrieve user followers.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    followers_amount = users_crud.get_amounts_of_followers(db_obj=user)
+    return followers_amount
+
+
+@router.get("/followings_amount/")
+def getFollowingsAmount(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+) -> Any:
+    """
+    Retrieve user followings.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    followers_amount = users_crud.get_amounts_of_followings(db_obj=user)
+    return followers_amount
