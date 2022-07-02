@@ -57,6 +57,7 @@ class UserProfile(UserBaseComplete):
     publicKey: Optional[str] = ''
     privateKey: Optional[str] = ''
     address: Optional[str] = ''
+    transactionHash: Optional[str] = ''
 
 
 class UserProfileModify(UserBase):

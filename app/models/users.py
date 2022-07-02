@@ -26,3 +26,4 @@ class Users(Base):
     privateKey = Column(String, default='')
     publicKey = Column(String, default='')
     address = Column(String, default='')
+    transactionHash = Column(String, default='')
