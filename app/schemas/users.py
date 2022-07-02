@@ -54,6 +54,10 @@ class UserProfile(UserBaseComplete):
     id: int
     following: List[int] = []
     followers: List[int] = []
+    publicKey: Optional[str] = ''
+    privateKey: Optional[str] = ''
+    address: Optional[str] = ''
+    transactionHash: Optional[str] = ''
 
 
 class UserProfileModify(UserBase):

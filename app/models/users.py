@@ -23,3 +23,7 @@ class Users(Base):
     biography: str = Column(String)
     following = Column(MutableList.as_mutable(ARRAY(Integer())), default=[])
     followers = Column(MutableList.as_mutable(ARRAY(Integer())), default=[])
+    privateKey = Column(String, default='')
+    publicKey = Column(String, default='')
+    address = Column(String, default='')
+    transactionHash = Column(String, default='')
