@@ -29,7 +29,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> List[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
 
-    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
+    def create(
+        self, db: Session, *, obj_in: CreateSchemaType, wallet=None
+    ) -> ModelType:
+        #  pylint: disable=unused-argument
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)  # type: ignore
         db.add(db_obj)

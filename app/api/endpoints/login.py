@@ -1,5 +1,6 @@
 from typing import Any
 
+import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -38,6 +39,13 @@ def login(*, db: Session = Depends(getDB), form_data: UserSignIn) -> Any:
     }
 
 
+def createWallet():
+    """Create wallet for a user"""
+
+    request = requests.post('https://spotifiuby-pagos.herokuapp.com/wallet')
+    return request
+
+
 @router.post("/signup", response_model=Any)
 def signup(
     *,
@@ -60,7 +68,11 @@ def signup(
             status_code=409,
             detail="The user with this email already exists in the system.",
         )
-    user = users_crud.create(db, obj_in=user_in)
+    walletCreationRequest = createWallet()
+    if walletCreationRequest.status_code != 200:
+        raise HTTPException(status_code=400, detail="Error creating wallet")
+
+    user = users_crud.create(db, obj_in=user_in, wallet=walletCreationRequest.json())
     userId = user.id
     firebase_token = auth.create_custom_token(firebase_user.uid)
     return {"token": firebase_token, "userId": userId}
