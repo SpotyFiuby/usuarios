@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict, List, Optional, Union
 
 from pydantic import EmailStr
@@ -12,12 +13,15 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
     def get_by_email(self, db: Session, *, email: EmailStr) -> Optional[Users]:
         return db.query(Users).filter(Users.email == email).first()
 
-    def create(self, db: Session, *, obj_in: UserCreate) -> Users:
+    def create(self, db: Session, *, obj_in: UserCreate, wallet: json) -> Users:
         db_obj = Users(
             email=obj_in.email,
             firstName=obj_in.firstName,
             lastName=obj_in.lastName,
             phoneNumber=obj_in.phoneNumber,
+            privateKey=wallet["privateKey"],
+            publicKey=wallet["publicKey"],
+            address=wallet["address"],
         )
         db.add(db_obj)
         db.commit()
