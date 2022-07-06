@@ -1,6 +1,5 @@
 from typing import Any
 
-import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -10,6 +9,8 @@ from app.api.utils import sign_in_with_email_and_password
 from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import UserCreate, UserSignIn
+
+from .wallet import createWallet
 
 router = APIRouter()
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
@@ -37,21 +38,6 @@ def login(*, db: Session = Depends(getDB), form_data: UserSignIn) -> Any:
         "token": firebase_token,
         "userId": userId,
     }
-
-
-def createWallet():
-    """Create wallet for a user"""
-
-    walletCreationRequest = requests.post(
-        'https://spotifiuby-pagos.herokuapp.com/wallet'
-    )
-    if walletCreationRequest.status_code != 200:
-        raise HTTPException(
-            status_code=walletCreationRequest.status_code,
-            detail="Error creating wallet",
-        )
-
-    return walletCreationRequest
 
 
 @router.post("/signup", response_model=Any)
