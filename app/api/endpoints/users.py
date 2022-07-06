@@ -8,6 +8,8 @@ from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import UserFollow, UserProfile, UserProfileModify, Users
 
+from .wallet import deposit
+
 router = APIRouter()
 
 
@@ -310,3 +312,32 @@ def unsuscribeContent(
         )
     userUnsuscribed = users_crud.unsuscribe(db, db_obj=user)
     return userUnsuscribed
+
+
+@router.put("/user_suscribe/{user_id}", response_model=UserProfile)
+def suscribeContent(
+    user_id: int,
+    amount_to_deposit: float,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Suscribe to content.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    try:
+        transacionInformation = deposit(user.id, amount_to_deposit)
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error making the deposit"
+        ) from e
+
+    userSuscribed = users_crud.suscribe(
+        db, db_obj=user, transactionInfo=transacionInformation.json()
+    )
+    return userSuscribed
