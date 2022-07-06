@@ -106,5 +106,12 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         len_followings = len(db_obj.following)
         return len_followings
 
+    def unsuscribe(self, db: Session, *, db_obj: Users):
+        db_obj.isPremium = False
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
 
 users = CRUDUser(Users)

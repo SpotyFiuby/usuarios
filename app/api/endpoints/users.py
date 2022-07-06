@@ -292,3 +292,21 @@ def getFollowingsProfile(
         )
     followingsList = user.following
     return getFollowUser(db, followingsList)
+
+
+@router.put("/user_unsuscribe/{user_id}", response_model=UserProfile)
+def unsuscribeContent(
+    user_id: int,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Unsuscribe to content.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    userUnsuscribed = users_crud.unsuscribe(db, db_obj=user)
+    return userUnsuscribed
