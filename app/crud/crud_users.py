@@ -113,5 +113,13 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         db.refresh(db_obj)
         return db_obj
 
+    def suscribe(self, db: Session, *, db_obj: Users, transactionInfo: json):
+        db_obj.isPremium = True
+        db_obj.transactionHash = transactionInfo["hash"]
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
 
 users = CRUDUser(Users)
