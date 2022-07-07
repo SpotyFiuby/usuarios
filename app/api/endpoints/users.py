@@ -174,14 +174,6 @@ def userArtistFollowings(
             status_code=404,
             detail="The user favourite does not exist in the system",
         )
-    # check if userFavouriteObj is tokenNotification is not empty
-    if not userFavouriteObj.tokenNotification:
-        raise HTTPException(
-            status_code=400,
-            detail="The user favourite does not have a tokenNotification",
-        )
-
-    # notification ok ("{"data":{"status":"ok","id":"ed0cde4e-38b5-479c-84e5-f482b934481c"}}")
     try:
         notifyUser = sendNotification(
             userFavouriteObj.tokenNotification,
@@ -362,3 +354,40 @@ def userNotification(
         db, db_obj=user, tokenNotification=user_token_notification
     )
     return userUpdated
+
+
+@router.put("/newMessageNotification/{user_addressee}", response_model=UserFollow)
+def newMessaNotification(
+    *,
+    db: Session = Depends(getDB),
+    user_addressee: int,
+) -> UserProfile:
+    """
+    Send a notification to user_addressee.
+    """
+
+    userAddresseeObj = users_crud.get(db, Id=user_addressee)
+    if not userAddresseeObj:
+        raise HTTPException(
+            status_code=404,
+            detail="The user addressee does not exist in the system",
+        )
+
+    try:
+        notifyUser = sendNotification(
+            userAddresseeObj.tokenNotification,
+            "You have a new message",
+            "You have a new message",
+        )
+        if notifyUser['data']['status'] == 'error':
+            raise HTTPException(
+                status_code=404,
+                detail="There were some error when sent the notification",
+            )
+
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error when sent the notification"
+        ) from e
+
+    return userAddresseeObj
