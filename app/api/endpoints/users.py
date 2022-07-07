@@ -6,7 +6,15 @@ from sqlalchemy.orm import Session
 
 from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
-from app.schemas.users import UserFollow, UserProfile, UserProfileModify, Users
+from app.schemas.users import (
+    UserFollow,
+    UserProfile,
+    UserProfileModify,
+    Users,
+    UserTokenNotification,
+)
+
+from .notifications import sendNotification
 
 router = APIRouter()
 
@@ -158,6 +166,44 @@ def userArtistFollowings(
     userUpdated = users_crud.updateUserFollowing(
         db, db_obj=user, obj_following=user_favourite
     )
+
+    # get user favourite to notify them
+    userFavouriteObj = users_crud.get(db, Id=user_favourite)
+    if not userFavouriteObj:
+        raise HTTPException(
+            status_code=404,
+            detail="The user favourite does not exist in the system",
+        )
+    # check if userFavouriteObj is tokenNotification is not empty
+    if not userFavouriteObj.tokenNotification:
+        raise HTTPException(
+            status_code=400,
+            detail="The user favourite does not have a tokenNotification",
+        )
+
+    # notification ok ("{"data":{"status":"ok","id":"ed0cde4e-38b5-479c-84e5-f482b934481c"}}")
+    try:
+        notifyUser = sendNotification(
+            userFavouriteObj.tokenNotification,
+            "You have a new follower",
+            "You have a new follower",
+        )
+        if notifyUser['data']['status'] == 'error':
+            raise HTTPException(
+                status_code=404,
+                detail="There were some error when notifiying the user favourite",
+            )
+
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error when notify the user favourite"
+        ) from e
+
+    # update user favourite with new follower
+    userUpdated = users_crud.updateUserFollowing(
+        db, db_obj=user, obj_following=user_favourite
+    )
+
     return userUpdated
 
 
@@ -292,3 +338,27 @@ def getFollowingsProfile(
         )
     followingsList = user.following
     return getFollowUser(db, followingsList)
+
+
+# create PUT endpoint receiving user id and token notification
+@router.put("/user_notification/{user_id}", response_model=UserTokenNotification)
+def userNotification(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_token_notification: str,
+) -> Any:
+    """
+    Update a user with user notification.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.updateUserNotification(
+        db, db_obj=user, tokenNotification=user_token_notification
+    )
+    return userUpdated

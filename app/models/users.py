@@ -27,3 +27,4 @@ class Users(Base):
     publicKey = Column(String, default='')
     address = Column(String, default='')
     transactionHash = Column(String, default='')
+    tokenNotification = Column(String, default='')
