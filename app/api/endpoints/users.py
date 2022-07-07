@@ -191,11 +191,6 @@ def userArtistFollowings(
             status_code=409, detail="There were an error when notify the user favourite"
         ) from e
 
-    # update user favourite with new follower
-    userUpdated = users_crud.updateUserFollowing(
-        db, db_obj=user, obj_following=user_favourite
-    )
-
     return userUpdated
 
 
