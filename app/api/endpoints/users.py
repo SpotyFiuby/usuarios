@@ -6,7 +6,13 @@ from sqlalchemy.orm import Session
 
 from app.crud.crud_users import users as users_crud
 from app.db.database import getDB
-from app.schemas.users import UserFollow, UserProfile, UserProfileModify, Users
+from app.schemas.users import (
+    UserFollow,
+    UserProfile,
+    UserProfileModify,
+    Users,
+    UserTokenNotification,
+)
 
 router = APIRouter()
 
@@ -292,3 +298,27 @@ def getFollowingsProfile(
         )
     followingsList = user.following
     return getFollowUser(db, followingsList)
+
+
+# create PUT endpoint receiving user id and token notification
+@router.put("/user_notification/{user_id}", response_model=UserTokenNotification)
+def userNotification(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_token_notification: str,
+) -> Any:
+    """
+    Update a user with user notification.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.updateUserNotification(
+        db, db_obj=user, tokenNotification=user_token_notification
+    )
+    return userUpdated
