@@ -14,6 +14,8 @@ from app.schemas.users import (
     UserTokenNotification,
 )
 
+from .notifications import sendNotification
+
 router = APIRouter()
 
 
@@ -164,6 +166,44 @@ def userArtistFollowings(
     userUpdated = users_crud.updateUserFollowing(
         db, db_obj=user, obj_following=user_favourite
     )
+
+    # get user favourite to notify them
+    userFavouriteObj = users_crud.get(db, Id=user_favourite)
+    if not userFavouriteObj:
+        raise HTTPException(
+            status_code=404,
+            detail="The user favourite does not exist in the system",
+        )
+    # check if userFavouriteObj is tokenNotification is not empty
+    if not userFavouriteObj.tokenNotification:
+        raise HTTPException(
+            status_code=400,
+            detail="The user favourite does not have a tokenNotification",
+        )
+
+    # notification ok ("{"data":{"status":"ok","id":"ed0cde4e-38b5-479c-84e5-f482b934481c"}}")
+    try:
+        notifyUser = sendNotification(
+            userFavouriteObj.tokenNotification,
+            "You have a new follower",
+            "You have a new follower",
+        )
+        if notifyUser['data']['status'] == 'error':
+            raise HTTPException(
+                status_code=404,
+                detail="There were some error when notifiying the user favourite",
+            )
+
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error when notify the user favourite"
+        ) from e
+
+    # update user favourite with new follower
+    userUpdated = users_crud.updateUserFollowing(
+        db, db_obj=user, obj_following=user_favourite
+    )
+
     return userUpdated
 
 
