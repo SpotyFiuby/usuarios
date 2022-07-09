@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from app.crud.users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import (
-    UserAdresseeData,
     UserFollow,
     UserProfile,
     UserProfileModify,
@@ -181,9 +180,8 @@ def userArtistFollowings(
             userFavouriteObj.tokenNotification,
             "You have a new follower",
             "You have a new follower",
-            UserAdresseeData(
-                user_id=userFavouriteObj.id, username=userFavouriteObj.username
-            ),
+            userFavouriteObj.id,
+            userFavouriteObj.username,
         )
         if notifyUser['data']['status'] == 'error':
             raise HTTPException(
@@ -378,9 +376,8 @@ def newMessaNotification(
             userAddresseeObj.tokenNotification,
             "You have a new message",
             "You have a new message",
-            UserAdresseeData(
-                user_id=userAddresseeObj.id, username=userAddresseeObj.username
-            ),
+            userAddresseeObj.id,
+            userAddresseeObj.username,
         )
         if notifyUser['data']['status'] == 'error':
             raise HTTPException(
