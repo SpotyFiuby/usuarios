@@ -75,3 +75,7 @@ class UserFollow(UserProfile):
 
 class UserTokenNotification(UserProfile):
     tokenNotification: Optional[str] = ''
+
+class UserWithTransactionHash(CustomBaseModel):
+    id: int
+    transaction_hash: str

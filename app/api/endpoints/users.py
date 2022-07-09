@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-from app.crud.crud_users import users as users_crud
+from app.crud.users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import (
     UserFollow,
@@ -12,6 +12,7 @@ from app.schemas.users import (
     UserProfileModify,
     Users,
     UserTokenNotification,
+    UserWithTransactionHash,
 )
 
 from .notifications import sendNotification
@@ -386,3 +387,25 @@ def newMessaNotification(
         ) from e
 
     return userAddresseeObj
+
+@router.get("/transactionHash")
+def getTransactionHash(
+    *,
+    db: Session = Depends(getDB),
+    skip: int = 0,
+    limit: int = 100,
+    ) -> Any:
+    '''
+    Returns the transaction hash of the user id.
+    '''
+    users = users_crud.get_multi(db, skip=skip, limit=limit)
+    if not users:
+        raise HTTPException(
+            status_code=404,
+            detail="There aren't any users.",
+        )
+    users_with_transaction_hash = []
+    for user in users:
+        if user.transactionHash != '':
+            users_with_transaction_hash.append(UserWithTransactionHash(user.id, user.transactionHash))
+    return users_with_transaction_hash

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.api.firebase import auth
 from app.api.utils import sign_in_with_email_and_password
-from app.crud.crud_users import users as users_crud
+from app.crud.users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import UserCreate, UserSignIn
 
