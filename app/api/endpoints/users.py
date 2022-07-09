@@ -388,13 +388,14 @@ def newMessaNotification(
 
     return userAddresseeObj
 
+
 @router.get("/transactionHash")
 def getTransactionHash(
     *,
     db: Session = Depends(getDB),
     skip: int = 0,
     limit: int = 100,
-    ) -> Any:
+) -> Any:
     '''
     Returns the transaction hash of the user id.
     '''
@@ -407,5 +408,7 @@ def getTransactionHash(
     users_with_transaction_hash = []
     for user in users:
         if user.transactionHash != '':
-            users_with_transaction_hash.append(UserWithTransactionHash(user.id, user.transactionHash))
+            users_with_transaction_hash.append(
+                UserWithTransactionHash(user.id, user.transactionHash)
+            )
     return users_with_transaction_hash
