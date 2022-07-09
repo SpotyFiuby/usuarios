@@ -389,7 +389,7 @@ def newMessaNotification(
     return userAddresseeObj
 
 
-@router.get("/transactionHash")
+@router.get("/transactionHash", response_model=List[UserWithTransactionHash])
 def getTransactionHash(
     *,
     db: Session = Depends(getDB),
