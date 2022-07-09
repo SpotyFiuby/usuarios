@@ -4,7 +4,7 @@ from fastapi import HTTPException
 NOTIFICATION_URL = "https://exp.host/--/api/v2/push/send"
 
 
-def sendNotification(tokenNotification, title, body):
+def sendNotification(tokenNotification, title, body, userAdresseeData):
     """Send a notification to a user.
     https://exp.host/--/api/v2/push/send with the following HTTP headers:
     host: exp.host
@@ -31,6 +31,7 @@ def sendNotification(tokenNotification, title, body):
         "to": tokenNotification,
         "title": title,
         "body": body,
+        "userAdresseeData": userAdresseeData,
     }
 
     response = requests.post(NOTIFICATION_URL, headers=headers, json=data)

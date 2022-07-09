@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.crud.users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import (
+    UserAdresseeData,
     UserFollow,
     UserProfile,
     UserProfileModify,
@@ -180,6 +181,9 @@ def userArtistFollowings(
             userFavouriteObj.tokenNotification,
             "You have a new follower",
             "You have a new follower",
+            UserAdresseeData(
+                user_id=userFavouriteObj.id, username=userFavouriteObj.username
+            ),
         )
         if notifyUser['data']['status'] == 'error':
             raise HTTPException(
@@ -189,7 +193,7 @@ def userArtistFollowings(
 
     except HTTPException as e:
         raise HTTPException(
-            status_code=409, detail="There were an error when notify the user favourite"
+            status_code=409, detail="There was an error when notify the user favourite"
         ) from e
 
     return userUpdated
@@ -374,16 +378,19 @@ def newMessaNotification(
             userAddresseeObj.tokenNotification,
             "You have a new message",
             "You have a new message",
+            UserAdresseeData(
+                user_id=userAddresseeObj.id, username=userAddresseeObj.username
+            ),
         )
         if notifyUser['data']['status'] == 'error':
             raise HTTPException(
                 status_code=404,
-                detail="There were some error when sent the notification",
+                detail="There were some error when sending the notification",
             )
 
     except HTTPException as e:
         raise HTTPException(
-            status_code=409, detail="There were an error when sent the notification"
+            status_code=409, detail="There were an error when sending the notification"
         ) from e
 
     return userAddresseeObj
@@ -410,6 +417,8 @@ def getTransactionHash(
         print(f"transaction hash: {user.transactionHash}")
         if user.transactionHash is not None:
             users_with_transaction_hash.append(
-                UserWithTransactionHash(int(user.id), user.transactionHash)
+                UserWithTransactionHash(
+                    id=int(user.id), transaction_hash=user.transactionHash
+                )
             )
     return users_with_transaction_hash

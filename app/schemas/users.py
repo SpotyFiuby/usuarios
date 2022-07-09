@@ -80,3 +80,8 @@ class UserTokenNotification(UserProfile):
 class UserWithTransactionHash(CustomBaseModel):
     id: int
     transaction_hash: str
+
+
+class UserAdresseeData(CustomBaseModel):
+    user_id: int
+    username: str
