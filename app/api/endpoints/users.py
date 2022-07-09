@@ -407,8 +407,9 @@ def getTransactionHash(
         )
     users_with_transaction_hash = []
     for user in users:
+        print(f"transaction hash: {user.transactionHash}")
         if user.transactionHash != '':
             users_with_transaction_hash.append(
-                UserWithTransactionHash(user.id, user.transactionHash)
+                UserWithTransactionHash(int(user.id), user.transactionHash)
             )
     return users_with_transaction_hash
