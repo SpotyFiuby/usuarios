@@ -180,8 +180,8 @@ def userArtistFollowings(
             userFavouriteObj.tokenNotification,
             "You have a new follower",
             "You have a new follower",
-            str(userFavouriteObj.id),
-            userFavouriteObj.username,
+            str(user_id),
+            user.firstName,
         )
         if notifyUser['data']['status'] == 'error':
             raise HTTPException(
@@ -354,21 +354,31 @@ def userNotification(
     return userUpdated
 
 
-@router.put("/newMessageNotification/{user_addressee}", response_model=UserFollow)
+@router.put(
+    "/newMessageNotification/{user_sender}/{user_addressee}", response_model=UserFollow
+)
 def newMessaNotification(
     *,
     db: Session = Depends(getDB),
+    user_sender: int,
     user_addressee: int,
 ) -> UserProfile:
     """
     Send a notification to user_addressee.
     """
 
+    userSender = users_crud.get(db, Id=user_sender)
+    if not userSender:
+        raise HTTPException(
+            status_code=404,
+            detail="The sender does not exist in the system",
+        )
+
     userAddresseeObj = users_crud.get(db, Id=user_addressee)
     if not userAddresseeObj:
         raise HTTPException(
             status_code=404,
-            detail="The user addressee does not exist in the system",
+            detail="The addressee does not exist in the system",
         )
 
     try:
@@ -376,8 +386,8 @@ def newMessaNotification(
             userAddresseeObj.tokenNotification,
             "You have a new message",
             "You have a new message",
-            str(userAddresseeObj.id),
-            userAddresseeObj.username,
+            str(userSender.id),
+            userSender.firstName,
         )
         if notifyUser['data']['status'] == 'error':
             raise HTTPException(
