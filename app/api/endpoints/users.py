@@ -180,7 +180,7 @@ def userArtistFollowings(
             userFavouriteObj.tokenNotification,
             "You have a new follower",
             "You have a new follower",
-            userFavouriteObj.id,
+            str(userFavouriteObj.id),
             userFavouriteObj.username,
         )
         if notifyUser['data']['status'] == 'error':
@@ -376,7 +376,7 @@ def newMessaNotification(
             userAddresseeObj.tokenNotification,
             "You have a new message",
             "You have a new message",
-            userAddresseeObj.id,
+            str(userAddresseeObj.id),
             userAddresseeObj.username,
         )
         if notifyUser['data']['status'] == 'error':

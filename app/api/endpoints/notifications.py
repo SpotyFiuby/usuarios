@@ -33,8 +33,10 @@ def sendNotification(
         "to": tokenNotification,
         "title": title,
         "body": body,
-        "userAdresseeId": userAdresseeId,
-        "userAdresseeUsername": userAddresseeUsername,
+        "data": {
+            "userAdresseeId": userAdresseeId,
+            "userAdresseeUsername": userAddresseeUsername,
+        },
     }
 
     response = requests.post(NOTIFICATION_URL, headers=headers, json=data)
