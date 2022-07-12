@@ -16,6 +16,7 @@ from app.schemas.users import (
 )
 
 from .notifications import sendNotification
+from .wallet import deposit
 
 router = APIRouter()
 
@@ -429,3 +430,50 @@ def getTransactionHash(
                 )
             )
     return users_with_transaction_hash
+
+
+@router.put("/user_unsuscribe/{user_id}", response_model=UserProfile)
+def unsuscribeContent(
+    user_id: int,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Unsuscribe to content.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    userUnsuscribed = users_crud.unsuscribe(db, db_obj=user)
+    return userUnsuscribed
+
+
+@router.put("/user_suscribe/{user_id}", response_model=UserProfile)
+def suscribeContent(
+    user_id: int,
+    amount_to_deposit: float,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Suscribe to content.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    try:
+        transacionInformation = deposit(user.privateKey, amount_to_deposit)
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error making the deposit"
+        ) from e
+
+    userSuscribed = users_crud.suscribe(
+        db, db_obj=user, transactionInfo=transacionInformation.json()
+    )
+    return userSuscribed
