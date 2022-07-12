@@ -71,3 +71,12 @@ class UserProfileModify(UserBase):
 class UserFollow(UserProfile):
     following: List[int] = []
     followers: List[int] = []
+
+
+class UserTokenNotification(UserProfile):
+    tokenNotification: Optional[str] = ''
+
+
+class UserWithTransactionHash(CustomBaseModel):
+    id: int
+    transaction_hash: str

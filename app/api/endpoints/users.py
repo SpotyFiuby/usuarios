@@ -4,10 +4,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-from app.crud.crud_users import users as users_crud
+from app.crud.users import users as users_crud
 from app.db.database import getDB
-from app.schemas.users import UserFollow, UserProfile, UserProfileModify, Users
+from app.schemas.users import (
+    UserFollow,
+    UserProfile,
+    UserProfileModify,
+    Users,
+    UserTokenNotification,
+    UserWithTransactionHash,
+)
 
+from .notifications import sendNotification
 from .wallet import deposit
 
 router = APIRouter()
@@ -160,6 +168,33 @@ def userArtistFollowings(
     userUpdated = users_crud.updateUserFollowing(
         db, db_obj=user, obj_following=user_favourite
     )
+
+    # get user favourite to notify them
+    userFavouriteObj = users_crud.get(db, Id=user_favourite)
+    if not userFavouriteObj:
+        raise HTTPException(
+            status_code=404,
+            detail="The user favourite does not exist in the system",
+        )
+    try:
+        notifyUser = sendNotification(
+            userFavouriteObj.tokenNotification,
+            "You have a new follower",
+            "You have a new follower",
+            str(user_id),
+            user.firstName,
+        )
+        if notifyUser['data']['status'] == 'error':
+            raise HTTPException(
+                status_code=404,
+                detail="There were some error when notifiying the user favourite",
+            )
+
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There was an error when notify the user favourite"
+        ) from e
+
     return userUpdated
 
 
@@ -294,6 +329,107 @@ def getFollowingsProfile(
         )
     followingsList = user.following
     return getFollowUser(db, followingsList)
+
+
+# create PUT endpoint receiving user id and token notification
+@router.put("/user_notification/{user_id}", response_model=UserTokenNotification)
+def userNotification(
+    *,
+    db: Session = Depends(getDB),
+    user_id: int,
+    user_token_notification: str,
+) -> Any:
+    """
+    Update a user with user notification.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    userUpdated = users_crud.updateUserNotification(
+        db, db_obj=user, tokenNotification=user_token_notification
+    )
+    return userUpdated
+
+
+@router.put(
+    "/newMessageNotification/{user_sender}/{user_addressee}", response_model=UserFollow
+)
+def newMessaNotification(
+    *,
+    db: Session = Depends(getDB),
+    user_sender: int,
+    user_addressee: int,
+) -> UserProfile:
+    """
+    Send a notification to user_addressee.
+    """
+
+    userSender = users_crud.get(db, Id=user_sender)
+    if not userSender:
+        raise HTTPException(
+            status_code=404,
+            detail="The sender does not exist in the system",
+        )
+
+    userAddresseeObj = users_crud.get(db, Id=user_addressee)
+    if not userAddresseeObj:
+        raise HTTPException(
+            status_code=404,
+            detail="The addressee does not exist in the system",
+        )
+
+    try:
+        notifyUser = sendNotification(
+            userAddresseeObj.tokenNotification,
+            "You have a new message",
+            "You have a new message",
+            str(userSender.id),
+            userSender.firstName,
+        )
+        if notifyUser['data']['status'] == 'error':
+            raise HTTPException(
+                status_code=404,
+                detail="There were some error when sending the notification",
+            )
+
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error when sending the notification"
+        ) from e
+
+    return userAddresseeObj
+
+
+@router.get("/transactionHash/", response_model=List[UserWithTransactionHash])
+def getTransactionHash(
+    *,
+    db: Session = Depends(getDB),
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    '''
+    Returns the transaction hash of the users.
+    '''
+    users = users_crud.get_multi(db, skip=skip, limit=limit)
+    if not users:
+        raise HTTPException(
+            status_code=404,
+            detail="There aren't any users.",
+        )
+    users_with_transaction_hash = []
+    for user in users:
+        print(f"transaction hash: {user.transactionHash}")
+        if user.transactionHash is not None:
+            users_with_transaction_hash.append(
+                UserWithTransactionHash(
+                    id=int(user.id), transaction_hash=user.transactionHash
+                )
+            )
+    return users_with_transaction_hash
 
 
 @router.put("/user_unsuscribe/{user_id}", response_model=UserProfile)

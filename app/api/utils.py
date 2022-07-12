@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 
 from app.api.firebase import FIREBASE_WEB_API_KEY
 from app.core.security import ALGORITHM, SECRET_KEY, create_access_token, oauth2_scheme
-from app.crud.crud_users import users as users_crud
+from app.crud.users import users as users_crud
 from app.schemas.token import TokenPayload
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
