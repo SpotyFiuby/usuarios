@@ -467,7 +467,7 @@ def suscribeContent(
         )
 
     try:
-        transacionInformation = deposit(user.id, amount_to_deposit)
+        transacionInformation = deposit(user.privateKey, amount_to_deposit)
     except HTTPException as e:
         raise HTTPException(
             status_code=409, detail="There were an error making the deposit"

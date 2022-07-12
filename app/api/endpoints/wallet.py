@@ -34,9 +34,9 @@ def createWallet():
     return walletCreationRequest
 
 
-def deposit(wallet_id, amount):
+def deposit(privateKey, amount):
     """Make a payment to a wallet
-    $ http POST http://localhost:3000/deposit senderId=1 amountInEthers='0.01'
+    $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
     HTTP/1.1 200 OK
     Connection: keep-alive
     Date: Sun, 08 Aug 2021 19:27:38 GMT
@@ -69,15 +69,15 @@ def deposit(wallet_id, amount):
         }
     }
     """
-    # $ http POST http://localhost:3000/deposit senderId=1 amountInEthers='0.01'
-    PARAMS = {'senderId': wallet_id, 'amountInEthers': amount}
+    # $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
+    PARAMS = {'privateKey': privateKey, 'amountInEthers': amount}
     paymentRequest = requests.post(
         '{}/{}'.format(TRANSACTIONS_URL, 'deposit'), params=PARAMS
     )
     if paymentRequest.status_code != 200:
         raise HTTPException(
             status_code=paymentRequest.status_code,
-            detail="Error creating wallet",
+            detail="Error procesing payment",
         )
 
     return paymentRequest
