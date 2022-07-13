@@ -71,13 +71,65 @@ def deposit(privateKey, amount):
     """
     # $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
     BODY = {'privateKey': privateKey, 'amountInEthers': "{0:.18f}".format(amount)}
-    print("BODY: ", BODY)
     HEADERS = {
         "content-type": "application/json",
     }
 
     paymentRequest = requests.post(
         '{}/{}'.format(TRANSACTIONS_URL, 'deposit'),
+        json=BODY,
+        headers=HEADERS,
+    )
+    if paymentRequest.status_code != 200:
+        raise HTTPException(
+            status_code=paymentRequest.status_code,
+            detail="Error procesing payment",
+        )
+    return paymentRequest
+
+
+def rechargeAWallet(privateKey, amount):
+    """Recharge wallet with ethers
+    $ http POST http://localhost:5000/sendPayment privateKey=0x248c amountInEthers='0.0000000000000001'
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    Date: Wed, 13 Jul 2022 01:19:39 GMT
+    content-length: 528
+    content-type: application/json; charset=utf-8
+
+    {
+        "chainId": 42,
+        "data": "0xd0e30db0",
+        "from": "0x1735c715ae114d5A26fa8f9c05c3A95340a20a41",
+        "gasLimit": {
+            "hex": "0x6d78",
+            "type": "BigNumber"
+        },
+        "gasPrice": {
+            "hex": "0x9502f907",
+            "type": "BigNumber"
+        },
+        "hash": "0x9ede78fbfde3",
+        "nonce": 2,
+        "r": "0x4888c320a2947269edd15a7",
+        "s": "0x72ca63f2418a16b2e805c986e0",
+        "to": "0x248c",
+        "type": null,
+        "v": 120,
+        "value": {
+            "hex": "0x64",
+            "type": "BigNumber"
+        }
+    }
+    """
+    # $ http POST http://localhost:5000/sendPayment privateKey=0x248c amountInEthers='0.0000000000000001'
+    BODY = {'privateKey': privateKey, 'amountInEthers': "{0:.18f}".format(amount)}
+    HEADERS = {
+        "content-type": "application/json",
+    }
+
+    paymentRequest = requests.post(
+        '{}/{}'.format(TRANSACTIONS_URL, 'sendPayment'),
         json=BODY,
         headers=HEADERS,
     )
