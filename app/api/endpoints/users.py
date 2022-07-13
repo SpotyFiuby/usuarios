@@ -16,7 +16,7 @@ from app.schemas.users import (
 )
 
 from .notifications import sendNotification
-from .wallet import deposit
+from .wallet import deposit, rechargeAWallet
 
 router = APIRouter()
 
@@ -450,8 +450,8 @@ def unsuscribeContent(
     return userUnsuscribed
 
 
-@router.put("/user_suscribe/{user_id}", response_model=UserProfile)
-def suscribeContent(
+@router.put("/premium_suscribe/{user_id}", response_model=UserProfile)
+def premiunSuscribe(
     user_id: int,
     amount_to_deposit: float,
     db: Session = Depends(getDB),
@@ -477,3 +477,30 @@ def suscribeContent(
         db, db_obj=user, transactionInfo=transacionInformation.json()
     )
     return userSuscribed
+
+
+@router.put("/recharge_wallet/{user_id}", response_model=UserProfile)
+def rechargeWallet(
+    user_id: int,
+    amount_to_deposit: float,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Recharge a wallet with ethers.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    try:
+        transacionInformation = rechargeAWallet(user.privateKey, amount_to_deposit)
+        print(transacionInformation.json())
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error making the recharge"
+        ) from e
+
+    return user
