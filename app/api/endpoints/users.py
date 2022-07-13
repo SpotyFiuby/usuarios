@@ -450,8 +450,8 @@ def unsuscribeContent(
     return userUnsuscribed
 
 
-@router.put("/user_suscribe/{user_id}", response_model=UserProfile)
-def suscribeContent(
+@router.put("/premium_suscribe/{user_id}", response_model=UserProfile)
+def premiunSuscribe(
     user_id: int,
     amount_to_deposit: float,
     db: Session = Depends(getDB),

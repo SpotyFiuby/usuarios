@@ -70,14 +70,20 @@ def deposit(privateKey, amount):
     }
     """
     # $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
-    PARAMS = {'privateKey': privateKey, 'amountInEthers': amount}
+    BODY = {'privateKey': privateKey, 'amountInEthers': "{0:.18f}".format(amount)}
+    print("BODY: ", BODY)
+    HEADERS = {
+        "content-type": "application/json",
+    }
+
     paymentRequest = requests.post(
-        '{}/{}'.format(TRANSACTIONS_URL, 'deposit'), params=PARAMS
+        '{}/{}'.format(TRANSACTIONS_URL, 'deposit'),
+        json=BODY,
+        headers=HEADERS,
     )
     if paymentRequest.status_code != 200:
         raise HTTPException(
             status_code=paymentRequest.status_code,
             detail="Error procesing payment",
         )
-
     return paymentRequest
