@@ -499,6 +499,7 @@ def rechargeWallet(
         transacionInformation = rechargeAWallet(user.privateKey, amount_to_deposit)
         print(transacionInformation.json())
     except HTTPException as e:
+        print("error during a recharge a wallet:{}".format(e))
         raise HTTPException(
             status_code=409, detail="There were an error making the recharge"
         ) from e

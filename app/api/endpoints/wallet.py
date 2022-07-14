@@ -134,6 +134,7 @@ def rechargeAWallet(privateKey, amount):
         headers=HEADERS,
     )
     if paymentRequest.status_code != 200:
+        print(paymentRequest.json())
         raise HTTPException(
             status_code=paymentRequest.status_code,
             detail="Error procesing payment",
