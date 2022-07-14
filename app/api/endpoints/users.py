@@ -16,6 +16,7 @@ from app.schemas.users import (
 )
 
 from .notifications import sendNotification
+from .wallet import deposit, rechargeAWallet
 
 router = APIRouter()
 
@@ -429,3 +430,78 @@ def getTransactionHash(
                 )
             )
     return users_with_transaction_hash
+
+
+@router.put("/user_unsuscribe/{user_id}", response_model=UserProfile)
+def unsuscribeContent(
+    user_id: int,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Unsuscribe to content.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+    userUnsuscribed = users_crud.unsuscribe(db, db_obj=user)
+    return userUnsuscribed
+
+
+@router.put("/premium_suscribe/{user_id}", response_model=UserProfile)
+def premiunSuscribe(
+    user_id: int,
+    amount_to_deposit: float,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Suscribe to content.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    try:
+        transacionInformation = deposit(user.privateKey, amount_to_deposit)
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error making the deposit"
+        ) from e
+
+    userSuscribed = users_crud.suscribe(
+        db, db_obj=user, transactionInfo=transacionInformation.json()
+    )
+    return userSuscribed
+
+
+@router.put("/recharge_wallet/{user_id}", response_model=UserProfile)
+def rechargeWallet(
+    user_id: int,
+    amount_to_deposit: float,
+    db: Session = Depends(getDB),
+) -> Any:
+    """
+    Recharge a wallet with ethers.
+    """
+    user = users_crud.get(db, Id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user does not exist in the system",
+        )
+
+    try:
+        transacionInformation = rechargeAWallet(user.privateKey, amount_to_deposit)
+        print(transacionInformation.json())
+    except HTTPException as e:
+        print("error during a recharge a wallet:{}".format(e))
+        raise HTTPException(
+            status_code=409, detail="There were an error making the recharge"
+        ) from e
+
+    return user
