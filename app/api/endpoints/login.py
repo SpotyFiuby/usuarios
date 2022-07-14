@@ -10,10 +10,10 @@ from app.crud.users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import UserCreate, UserSignIn
 
-from .wallet import createWallet
+from .wallet import createWallet, rechargeAWallet
 
 router = APIRouter()
-ACCESS_TOKEN_EXPIRE_MINUTES = 1440
+INITIAL_BALANCE = 0.00000000000000001  # 10 wei
 
 
 @router.post("/signin", response_model=Any)
@@ -70,4 +70,14 @@ def signup(
     user = users_crud.create(db, obj_in=user_in, wallet=wallet.json())
     userId = user.id
     firebase_token = auth.create_custom_token(firebase_user.uid)
+
+    # recharge the user wallet with 10 wei or 0.00000000000000001 ether
+    try:
+        transacionInformation = rechargeAWallet(user.privateKey, INITIAL_BALANCE)
+        print(transacionInformation.json())
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=409, detail="There were an error making the recharge"
+        ) from e
+
     return {"token": firebase_token, "userId": userId}
