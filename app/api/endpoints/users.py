@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-from app.api.endpoints import logger
 from app.crud.users import users as users_crud
 from app.db.database import getDB
+from app.logger import create_logger
 from app.schemas.users import (
     UserFollow,
     UserProfile,
@@ -20,6 +20,7 @@ from .notifications import sendNotification
 from .wallet import deposit, rechargeAWallet
 
 router = APIRouter()
+logger = create_logger()
 
 
 @router.get("/", response_model=List[UserProfile])

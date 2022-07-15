@@ -3,9 +3,10 @@ import os
 import requests
 from fastapi import HTTPException
 
-from app.api.endpoints import logger
+from app.logger import create_logger
 
 TRANSACTIONS_URL = os.environ["TRANSACTIONS_URL"]
+logger = create_logger()
 
 
 async def createWallet():
@@ -125,6 +126,8 @@ def rechargeAWallet(privateKey, amount):
     }
     """
     # $ http POST http://localhost:5000/sendPayment privateKey=0x248c amountInEthers='0.0000000000000001'
+    logger.debug("--------- privateKey: %s ----------", privateKey)
+
     BODY = {'privateKey': privateKey, 'amountInEthers': "{0:.18f}".format(amount)}
     HEADERS = {
         "content-type": "application/json",
