@@ -63,7 +63,7 @@ async def signup(
             detail="The user with this email already exists in the system.",
         )
     try:
-        wallet = createWallet()
+        wallet = await createWallet()
     except HTTPException as e:
         raise HTTPException(status_code=409, detail="Error creating wallet") from e
 
@@ -72,8 +72,11 @@ async def signup(
     firebase_token = auth.create_custom_token(firebase_user.uid)
 
     # recharge the user wallet with 10 Gwei or 0.00000001 ethers
+
     try:
-        transacionInformation = await rechargeAWallet(user.privateKey, INITIAL_BALANCE)
+        transacionInformation = await rechargeAWallet(
+            wallet.get("privateKey"), INITIAL_BALANCE
+        )
         print(transacionInformation.json())
     except HTTPException as e:
         raise HTTPException(
