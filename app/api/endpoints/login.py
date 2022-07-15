@@ -75,7 +75,7 @@ async def signup(
 
     try:
         transacionInformation = await rechargeAWallet(
-            wallet.get("privateKey"), INITIAL_BALANCE
+            wallet.json().get("privateKey"), INITIAL_BALANCE
         )
         print(transacionInformation.json())
     except HTTPException as e:
