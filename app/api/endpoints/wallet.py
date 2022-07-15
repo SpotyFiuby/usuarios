@@ -3,6 +3,8 @@ import os
 import requests
 from fastapi import HTTPException
 
+from app.api.endpoints import logger
+
 TRANSACTIONS_URL = os.environ["TRANSACTIONS_URL"]
 
 
@@ -134,7 +136,8 @@ def rechargeAWallet(privateKey, amount):
         headers=HEADERS,
     )
     if paymentRequest.status_code != 200:
-        print(paymentRequest.json())
+        logger.debug(" ---- paymentRequest.text----- %s", paymentRequest.text)
+        # print(paymentRequest.json())
         raise HTTPException(
             status_code=paymentRequest.status_code,
             detail="Error procesing payment",

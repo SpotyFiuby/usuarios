@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
+from app.api.endpoints import logger
 from app.crud.users import users as users_crud
 from app.db.database import getDB
 from app.schemas.users import (
@@ -289,7 +290,7 @@ def getFollowUser(db, idsList):
     for userId in idsList:
         user = users_crud.get(db, Id=userId)
         if not user:
-            print("user id: {} not found".format(id))
+            logger.debug("The user %s does not exist in the system", userId)
         followers.append(user)
 
     return followers
@@ -422,7 +423,7 @@ def getTransactionHash(
         )
     users_with_transaction_hash = []
     for user in users:
-        print(f"transaction hash: {user.transactionHash}")
+        logger.info("transaction hash: %s", {user.transactionHash})
         if user.transactionHash is not None:
             users_with_transaction_hash.append(
                 UserWithTransactionHash(
@@ -497,9 +498,9 @@ def rechargeWallet(
 
     try:
         transacionInformation = rechargeAWallet(user.privateKey, amount_to_deposit)
-        print(transacionInformation.json())
+        logger.info("transactionInfor: %s", transacionInformation.json())
     except HTTPException as e:
-        print("error during a recharge a wallet:{}".format(e))
+        logger.error("error during a recharge a wallet: %s", e)
         raise HTTPException(
             status_code=409, detail="There were an error making the recharge"
         ) from e
