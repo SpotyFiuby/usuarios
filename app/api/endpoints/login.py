@@ -41,7 +41,7 @@ def login(*, db: Session = Depends(getDB), form_data: UserSignIn) -> Any:
 
 
 @router.post("/signup", response_model=Any)
-def signup(
+async def signup(
     *,
     db: Session = Depends(getDB),
     user_in: UserCreate,
@@ -73,7 +73,7 @@ def signup(
 
     # recharge the user wallet with 10 Gwei or 0.00000001 ethers
     try:
-        transacionInformation = rechargeAWallet(user.privateKey, INITIAL_BALANCE)
+        transacionInformation = await rechargeAWallet(user.privateKey, INITIAL_BALANCE)
         print(transacionInformation.json())
     except HTTPException as e:
         raise HTTPException(
