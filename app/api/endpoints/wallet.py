@@ -8,7 +8,7 @@ from app.api.endpoints import logger
 TRANSACTIONS_URL = os.environ["TRANSACTIONS_URL"]
 
 
-def createWallet():
+async def createWallet():
     """Create wallet for a user
     $ http POST http://localhost:3000/wallet
     HTTP/1.1 200 OK
@@ -36,7 +36,7 @@ def createWallet():
     return walletCreationRequest
 
 
-def deposit(privateKey, amount):
+async def deposit(privateKey, amount):
     """Make a payment to a wallet
     $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
     HTTP/1.1 200 OK
