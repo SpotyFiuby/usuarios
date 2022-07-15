@@ -453,7 +453,7 @@ def unsuscribeContent(
 
 
 @router.put("/premium_suscribe/{user_id}", response_model=UserProfile)
-def premiunSuscribe(
+async def premiunSuscribe(
     user_id: int,
     amount_to_deposit: float,
     db: Session = Depends(getDB),
@@ -469,7 +469,7 @@ def premiunSuscribe(
         )
 
     try:
-        transacionInformation = deposit(user.privateKey, amount_to_deposit)
+        transacionInformation = await deposit(user.privateKey, amount_to_deposit)
     except HTTPException as e:
         raise HTTPException(
             status_code=409, detail="There were an error making the deposit"
