@@ -3,10 +3,13 @@ import os
 import requests
 from fastapi import HTTPException
 
+from app.logger import create_logger
+
 TRANSACTIONS_URL = os.environ["TRANSACTIONS_URL"]
+logger = create_logger()
 
 
-def createWallet():
+async def createWallet():
     """Create wallet for a user
     $ http POST http://localhost:3000/wallet
     HTTP/1.1 200 OK
@@ -34,7 +37,7 @@ def createWallet():
     return walletCreationRequest
 
 
-def deposit(privateKey, amount):
+async def deposit(privateKey, amount):
     """Make a payment to a wallet
     $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
     HTTP/1.1 200 OK
@@ -70,7 +73,9 @@ def deposit(privateKey, amount):
     }
     """
     # $ http POST http://localhost:5000/deposit privateKey=1 amountInEthers='0.01'
-    BODY = {'privateKey': privateKey, 'amountInEthers': "{0:.18f}".format(amount)}
+    amountToSend = amount = "%.18f" % float(amount)
+    logger.info("------amountToSend: %s------", amountToSend)
+    BODY = {'privateKey': privateKey, 'amountInEthers': amountToSend}
     HEADERS = {
         "content-type": "application/json",
     }
@@ -81,6 +86,7 @@ def deposit(privateKey, amount):
         headers=HEADERS,
     )
     if paymentRequest.status_code != 200:
+        logger.info(" ---- paymentRequest.text----- %s", paymentRequest.text)
         raise HTTPException(
             status_code=paymentRequest.status_code,
             detail="Error procesing payment",
@@ -123,7 +129,8 @@ def rechargeAWallet(privateKey, amount):
     }
     """
     # $ http POST http://localhost:5000/sendPayment privateKey=0x248c amountInEthers='0.0000000000000001'
-    BODY = {'privateKey': privateKey, 'amountInEthers': "{0:.18f}".format(amount)}
+    amountToSend = amount = "%.18f" % float(amount)
+    BODY = {'privateKey': privateKey, 'amountInEthers': amountToSend}
     HEADERS = {
         "content-type": "application/json",
     }
@@ -134,7 +141,8 @@ def rechargeAWallet(privateKey, amount):
         headers=HEADERS,
     )
     if paymentRequest.status_code != 200:
-        print(paymentRequest.json())
+        logger.info(" ---- paymentRequest.text----- %s", paymentRequest.text)
+        # print(paymentRequest.json())
         raise HTTPException(
             status_code=paymentRequest.status_code,
             detail="Error procesing payment",

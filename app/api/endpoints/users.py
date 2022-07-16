@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.users import users as users_crud
 from app.db.database import getDB
+from app.logger import create_logger
 from app.schemas.users import (
     UserFollow,
     UserProfile,
@@ -19,6 +20,7 @@ from .notifications import sendNotification
 from .wallet import deposit, rechargeAWallet
 
 router = APIRouter()
+logger = create_logger()
 
 
 @router.get("/", response_model=List[UserProfile])
@@ -289,7 +291,7 @@ def getFollowUser(db, idsList):
     for userId in idsList:
         user = users_crud.get(db, Id=userId)
         if not user:
-            print("user id: {} not found".format(id))
+            logger.debug("The user %s does not exist in the system", userId)
         followers.append(user)
 
     return followers
@@ -422,7 +424,7 @@ def getTransactionHash(
         )
     users_with_transaction_hash = []
     for user in users:
-        print(f"transaction hash: {user.transactionHash}")
+        logger.info("transaction hash: %s", {user.transactionHash})
         if user.transactionHash is not None:
             users_with_transaction_hash.append(
                 UserWithTransactionHash(
@@ -451,7 +453,7 @@ def unsuscribeContent(
 
 
 @router.put("/premium_suscribe/{user_id}", response_model=UserProfile)
-def premiunSuscribe(
+async def premiunSuscribe(
     user_id: int,
     amount_to_deposit: float,
     db: Session = Depends(getDB),
@@ -467,7 +469,7 @@ def premiunSuscribe(
         )
 
     try:
-        transacionInformation = deposit(user.privateKey, amount_to_deposit)
+        transacionInformation = await deposit(user.privateKey, amount_to_deposit)
     except HTTPException as e:
         raise HTTPException(
             status_code=409, detail="There were an error making the deposit"
@@ -497,9 +499,9 @@ def rechargeWallet(
 
     try:
         transacionInformation = rechargeAWallet(user.privateKey, amount_to_deposit)
-        print(transacionInformation.json())
+        logger.info("transactionInfor: %s", transacionInformation.json())
     except HTTPException as e:
-        print("error during a recharge a wallet:{}".format(e))
+        logger.error("error during a recharge a wallet: %s", e)
         raise HTTPException(
             status_code=409, detail="There were an error making the recharge"
         ) from e
