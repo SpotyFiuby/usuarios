@@ -23,8 +23,6 @@ poetry install
 
 ## Cómo levantar el servidor usando Docker:
 
-<u> Primero: agregar el archivo .env en el directorio root. </u>
-
 Ir al directorio del proyecto (en donde está el archivo Dockerfile) para hacer build de la imagen de nuestro proyecto:
 
 ```
