@@ -498,7 +498,7 @@ def rechargeWallet(
         )
 
     try:
-        transacionInformation = rechargeAWallet(user.privateKey, amount_to_deposit)
+        transacionInformation = rechargeAWallet(user.address, amount_to_deposit)
         logger.info("transactionInfor: %s", transacionInformation.json())
     except HTTPException as e:
         logger.error("error during a recharge a wallet: %s", e)

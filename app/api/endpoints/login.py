@@ -13,7 +13,7 @@ from app.schemas.users import UserCreate, UserSignIn
 from .wallet import createWallet, rechargeAWallet
 
 router = APIRouter()
-INITIAL_BALANCE = 0.0000001  # 100 Gwei
+INITIAL_BALANCE = 0.000000001  # 1 Gwei
 
 
 @router.post("/signin", response_model=Any)
@@ -71,11 +71,11 @@ async def signup(
     userId = user.id
     firebase_token = auth.create_custom_token(firebase_user.uid)
 
-    # recharge the user wallet with 100 Gwei or 0.0000001 ethers
+    # recharge the user wallet with 1 Gwei or 0.000000001 ethers
 
     try:
         transacionInformation = await rechargeAWallet(
-            wallet.json().get("privateKey"), INITIAL_BALANCE
+            wallet.json().get("address"), INITIAL_BALANCE
         )
         print(transacionInformation.json())
     except HTTPException as e:
