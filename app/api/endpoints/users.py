@@ -19,8 +19,9 @@ from app.schemas.users import (
 from .notifications import sendNotification
 from .wallet import deposit, rechargeAWallet
 
-router = APIRouter()
 logger = create_logger()
+
+router = APIRouter()
 
 
 @router.get("/", response_model=List[UserProfile])

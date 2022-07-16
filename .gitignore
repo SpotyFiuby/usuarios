@@ -16,3 +16,4 @@ venv/
 envSpotifiuby/
 usuarios-taller/
 .nox/*
+.coverage

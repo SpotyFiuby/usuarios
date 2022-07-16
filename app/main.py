@@ -6,6 +6,9 @@ from fastapi_sqlalchemy import DBSessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.api import api_router
+from app.logger import create_logger
+
+logger = create_logger()
 
 
 def fix_dialect(s):
@@ -35,6 +38,7 @@ def create_app():
 
     @_app.get("/", tags=["Home"])
     def home():
+        logger.info("Starting application...")
         return {"message": "Spotifiuba - 2022"}
 
     return _app
