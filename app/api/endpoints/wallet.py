@@ -94,9 +94,9 @@ async def deposit(privateKey, amount):
     return paymentRequest
 
 
-def rechargeAWallet(privateKey, amount):
+def rechargeAWallet(address, amount):
     """Recharge wallet with ethers
-    $ http POST http://localhost:5000/sendPayment privateKey=0x248c amountInEthers='0.0000000000000001'
+    $ http POST http://localhost:5000/sendPayment address=0x248c amountInEthers='0.0000000000000001'
     HTTP/1.1 200 OK
     Connection: keep-alive
     Date: Wed, 13 Jul 2022 01:19:39 GMT
@@ -128,9 +128,9 @@ def rechargeAWallet(privateKey, amount):
         }
     }
     """
-    # $ http POST http://localhost:5000/sendPayment privateKey=0x248c amountInEthers='0.0000000000000001'
+    # $ http POST http://localhost:5000/sendPayment address=0x248c amountInEthers='0.0000000000000001'
     amountToSend = amount = "%.18f" % float(amount)
-    BODY = {'privateKey': privateKey, 'amountInEthers': amountToSend}
+    BODY = {'address': address, 'amountInEthers': amountToSend}
     HEADERS = {
         "content-type": "application/json",
     }
