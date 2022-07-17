@@ -94,7 +94,7 @@ async def deposit(privateKey, amount):
     return paymentRequest
 
 
-def rechargeAWallet(address, amount):
+async def rechargeAWallet(address, amount):
     """Recharge wallet with ethers
     $ http POST http://localhost:5000/sendPayment address=0x248c amountInEthers='0.0000000000000001'
     HTTP/1.1 200 OK
