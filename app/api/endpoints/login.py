@@ -13,7 +13,7 @@ from app.schemas.users import UserCreate, UserSignIn
 from .wallet import createWallet, rechargeAWallet
 
 router = APIRouter()
-INITIAL_BALANCE = 0.000000001  # 1 Gwei
+INITIAL_BALANCE = 0.0011  # 1100000 Gwei
 
 
 @router.post("/signin", response_model=Any)
