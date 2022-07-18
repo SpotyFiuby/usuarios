@@ -13,7 +13,7 @@ from app.schemas.users import UserCreate, UserSignIn
 from .wallet import createWallet, rechargeAWallet
 
 router = APIRouter()
-INITIAL_BALANCE = 0.000000001  # 1 Gwei
+INITIAL_BALANCE = 0.0011  # 1100000 Gwei
 
 
 @router.post("/signin", response_model=Any)
@@ -67,10 +67,6 @@ async def signup(
     except HTTPException as e:
         raise HTTPException(status_code=409, detail="Error creating wallet") from e
 
-    user = users_crud.create(db, obj_in=user_in, wallet=wallet.json())
-    userId = user.id
-    firebase_token = auth.create_custom_token(firebase_user.uid)
-
     # recharge the user wallet with 1 Gwei or 0.000000001 ethers
 
     try:
@@ -82,5 +78,9 @@ async def signup(
         raise HTTPException(
             status_code=409, detail="There were an error making the recharge"
         ) from e
+
+    user = users_crud.create(db, obj_in=user_in, wallet=wallet.json())
+    userId = user.id
+    firebase_token = auth.create_custom_token(firebase_user.uid)
 
     return {"token": firebase_token, "userId": userId}
